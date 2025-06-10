@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameGen - By Shrestangsu Dutta</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+      color: #e0e0e0;
+    }
+    header {
+      background: #111;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 0 15px #00f2ff80;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #00f2ff;
+    }
+    nav a {
+      color: #888;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #00f2ff;
+    }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(to right, #101010, #1c1c1c);
+      border-top: 2px solid #333;
+      border-bottom: 2px solid #333;
+    }
+    .hero h2 {
+      font-size: 2.5rem;
+      color: #00f2ff;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .game-card {
+      background: #111;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 0 20px #00f2ff44;
+      transition: 0.3s;
+      color: white;
+    }
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #00f2ff99;
+    }
+    .game-card img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .game-card h3 {
+      margin: 0.5rem 0;
+      color: #00f2ff;
+    }
+    .game-card a {
+      color: #00f2ff;
+      text-decoration: none;
+    }
+    footer {
+      background: #0a0a0a;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #888;
+      border-top: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GameGen</h1>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#games">Games</a>
+      <a href="#gd">Geometry Dash Levels</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <h2>🔥 Welcome to GameGen 🔥</h2>
+    <p>Original, downloadable games made by me.</p>
+  </section>
+
+<section class="gallery" id="games"></section>
+<script>
+  const games = [
+    {
+      title: "Have a Restaurant",
+      image: "https://via.placeholder.com/300x180",
+      description: "A game where you are a manager of a Restaurant. Take orders, Cook food, Serve em' and much more!",
+      download: "#"
+    },
+    {
+      title: "Pixel Escape",
+      image: "https://via.placeholder.com/300x180",
+      description: "Retro-style adventure platformer. Unity engine.",
+      download: "#"
+    },
+    // 🔥 Add more games here
+  ];
+
+  const gallery = document.querySelector('.gallery');
+  games.forEach(game => {
+    gallery.innerHTML += `
+      <div class="game-card">
+        <img src="${game.image}" alt="${game.title} Screenshot">
+        <h3>${game.title}</h3>
+        <p>${game.description}</p>
+        <a href="${game.download}">Download</a>
+      </div>
+    `;
+  });
+</script>
+
+
+  <section class="hero" id="gd">
+    <h2>🎵 My Geometry Dash Levels</h2>
+    <p>Play the custom levels by CubicGuyInBlue!</p>
+    <ul style="list-style: none; padding: 0;">
+      <li><strong>Ultra Slaughter</strong> - Insane Difficulty [ID: 12345678]</li>
+      <li><strong>Slaughterwave</strong> - Insane Difficulty [ID: 87654321]</li>
+      <li><strong>More levels coming soon!</strong></li>
+    </ul>
+    <p>Username: <strong>CubicGuyInBlue</strong> 🔷</p>
+    <p>My cube is inspired by the Portal 2 Companion Cube 💙</p>
+  </section>
+
+  <section id="about" class="hero">
+    <h2>👨‍💻 About the Developer</h2>
+    <p>Hey there! I’m Shrestangsu Dutta, also known as CubicGuyInBlue. I love creating games, animations, music, and Geometry Dash levels that combine creativity and chaos. All the content here is proudly made from scratch using Unity, Java, or pure madness. 💙</p>
+  </section>
+
+  <section id="contact" class="hero">
+    <h2>📬 Contact Me</h2>
+    <p>Want to give feedback or request a game? Reach out at: <br><strong>cubicdev@mydomain.com</strong> (replace this with your email)</p>
+  </section>
+
+  <footer>
+    Made by Shrestangsu Dutta | CubicGuyInBlue | 2025
+  </footer>
+</body>
+</html>
