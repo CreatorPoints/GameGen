@@ -59,6 +59,66 @@
       transition: 0.3s;
       color: white;
     }
+    .level-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.level-card {
+  display: flex;
+  align-items: center;
+  background: #111;
+  border: 2px solid #00f2ff;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00f2ff80;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.level-card:hover {
+  transform: scale(1.03);
+}
+
+.level-bg {
+  width: 160px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.level-info {
+  padding: 1rem;
+  color: white;
+  flex-grow: 1;
+}
+
+.level-info h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #00f2ff;
+}
+
+.level-info p {
+  margin: 0.5rem 0;
+}
+
+.level-info button {
+  background-color: #00f2ff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.level-info button:hover {
+  background-color: #00cce6;
+}
+
     .game-card:hover {
       transform: scale(1.05);
       box-shadow: 0 0 30px #00f2ff99;
@@ -131,14 +191,31 @@
   <section class="hero" id="gd">
     <h2>🎵 My Geometry Dash Levels 🎵</h2>
     <p>Play the custom levels by CubicGuyInBlue!</p>
-    <ul style="list-style: none; padding: 0;">
-      <li><strong>Nothing... For now</strong> - N/A Difficulty [ID: N/A]</li>
-      <li><strong>Nothing... For now</strong> - N/A Difficulty [ID: N/A]</li>
-      <li><strong>More levels coming soon!</strong></li>
-    </ul>
+   
     <p>Username: <strong>CubicGuyInBlue</strong></p>
     <p>My cube is inspired by the Portal 2 Companion Cube</p>
   </section>
+<div class="level-gallery">
+  <div class="level-card">
+    <div class="level-bg" style="background-image: url('img/ultraslaughter.png');"></div>
+    <div class="level-info">
+      <h3>Ultra Slaughter</h3>
+      <p>ID: <span class="level-id">00000000032</span></p>
+      <button onclick="copyID('00000000032')">📋 Copy</button>
+    </div>
+  </div>
+
+  <div class="level-card">
+    <div class="level-bg" style="background-image: url('img/slaughterwave.png');"></div>
+    <div class="level-info">
+      <h3>Slaughterwave</h3>
+      <p>ID: <span class="level-id">0e000000032</span></p>
+      <button onclick="copyID('0e000000032')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- Add more level cards here -->
+</div>
 
   <section id="about" class="hero">
     <h2>👨‍💻 About the Developer</h2>
