@@ -161,6 +161,40 @@
     background-position: 0% 50%;
   }
 }
+    form {
+  max-width: 500px;
+  margin: auto;
+  background: #111;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #00f2ff33;
+}
+
+form input, form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: white;
+}
+
+form button {
+  background-color: #00f2ff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+form button:hover {
+  background-color: #00cce6;
+}
+
 
   </style>
 </head>
@@ -232,8 +266,14 @@
   </section>
 
   <section id="contact" class="hero">
-    <h2>📬 Contact Me</h2>
-    <p>Want to give feedback or request a game? Reach out at: <br><strong>shrestangshudutta@gmail.com</strong></p>
+  <h2>📝 Send Me Feedback</h2>
+<form action="https://formspree.io/f/xqabpjjb" method="POST">
+  <input type="text" name="name" placeholder="Your Name" required><br><br>
+  <input type="email" name="email" placeholder="Your Email (optional)"><br><br>
+  <textarea name="message" rows="6" placeholder="Your feedback or thoughts!" required></textarea><br><br>
+  <button type="submit">📨 Send Feedback</button>
+</form>
+
   </section>
 
   <footer>
