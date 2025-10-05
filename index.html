@@ -141,54 +141,134 @@
     <p>The games here are all made only by Photon Studios. Before downloading any games or content, please review our terms of use. All games here are in .zip form, further instructions on the game files.</p>
   </section>
 
-  <section class="gallery" id="games">
-    <h2>Games</h2>
-  </section>
-  <script>
-    const games = [
-      {
-        title: "No game here yet!",
-        image: "images/famous-dolomites-mountains-italy_268835-14213.jpeg",
-        description: "If you see this, report it to our email.",
-        download: "#"
-      },
-      {
-        title: "test holder",
-        image: "images/famous-dolomites-mountains-italy_268835-14213.jpeg",
-        description: "If you see this, report it to our email.",
-        download: "#"
-      },
-      {
-        title: "test holder",
-        image: "images/famous-dolomites-mountains-italy_268835-14213.jpeg",
-        description: "If you see this, report it to our email.",
-        download: "#"
-      },
-      {
-        title: "test holder",
-        image: "images/famous-dolomites-mountains-italy_268835-14213.jpeg",
-        description: "If you see this, report it to our email.",
-        download: "#"
-      },
-      {
-        title: "test holder",
-        image: "images/famous-dolomites-mountains-italy_268835-14213.jpeg",
-        description: "If you see this, report it to our email.",
-        download: "#"
-      }
-    ];
-    const gallery = document.querySelector('.gallery');
-    games.forEach(game => {
-      gallery.innerHTML += `
-        <div class="game-card">
-          <img src="${game.image}" alt="${game.title} Screenshot">
+ <!-- Games Section -->
+<section class="hero" id="games">
+  <h2>🎮 Our Games</h2>
+  <p>Scroll through our current and upcoming games below:</p>
+
+  <div class="game-table">
+    <!-- Games will be dynamically added here -->
+  </div>
+</section>
+
+<style>
+  .game-table {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid #00f2ff44;
+    box-shadow: 0 0 15px #00f2ff33;
+  }
+
+  .game-row {
+    position: relative;
+    height: 180px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .game-row:hover {
+    transform: scale(1.02);
+  }
+
+  .game-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px) brightness(0.6);
+    transform: scale(1.1);
+  }
+
+  .game-overlay {
+    position: relative;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.2));
+    padding: 1rem;
+    z-index: 2;
+  }
+
+  .game-overlay h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #00f2ff;
+  }
+
+  .game-overlay p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #ddd;
+  }
+
+  .game-overlay a {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 14px;
+    background: #00f2ff;
+    color: #000;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+
+  .game-overlay a:hover {
+    background: #00cce6;
+  }
+
+  /* Scrollbar style */
+  .game-table::-webkit-scrollbar {
+    width: 8px;
+  }
+  .game-table::-webkit-scrollbar-thumb {
+    background: #00f2ff66;
+    border-radius: 6px;
+  }
+</style>
+
+<script>
+  const games = [
+    {
+      title: "Keyboard Symphony",
+      image: "https://via.placeholder.com/800x400?text=Keyboard+Symphony",
+      description: "The hardest rhythm game with 6+ rows — test your true speed!",
+      download: "#"
+    },
+    {
+      title: "Project Outpost",
+      image: "https://via.placeholder.com/800x400?text=Project+Outpost",
+      description: "A mysterious abandoned base hides an ancient horror...",
+      download: "#"
+    },
+    {
+      title: "No Game Yet",
+      image: "https://via.placeholder.com/800x400?text=Coming+Soon",
+      description: "More games are coming soon. Stay tuned!",
+      download: "#"
+    },
+  ];
+
+  const gameTable = document.querySelector('.game-table');
+  games.forEach(game => {
+    gameTable.innerHTML += `
+      <div class="game-row">
+        <div class="game-bg" style="background-image: url('${game.image}')"></div>
+        <div class="game-overlay">
           <h3>${game.title}</h3>
           <p>${game.description}</p>
           <a href="${game.download}">Download</a>
         </div>
-      `;
-    });
-  </script>
+      </div>
+    `;
+  });
+</script>
+
 
 <!-- Game Status Section -->
 <section class="hero" id="status">
@@ -253,6 +333,7 @@
   </footer>
 </body>
 </html>
+
 
 
 
