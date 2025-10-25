@@ -155,33 +155,17 @@
 const form = document.querySelector("form");
 
 form.addEventListener("submit", function(e) {
-    e.preventDefault(); // prevent normal submission
-    const formData = new FormData(form);
+    // Show thank you message immediately
+    const thankYou = document.createElement("p");
+    thankYou.textContent = "🎉 Thank you for supporting Photon Studios! We’ll confirm your reward via email soon.";
+    thankYou.style.color = "#00f2ff";
+    thankYou.style.fontWeight = "bold";
+    form.parentNode.insertBefore(thankYou, form.nextSibling);
 
-    fetch(form.action, {
-        method: form.method,
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-    }).then(response => {
-        if (response.ok) {
-            // show thank you message
-            const thankYou = document.createElement("p");
-            thankYou.textContent = "🎉 Thank you for supporting Photon Studios! We’ll confirm your reward via email soon.";
-            thankYou.style.color = "#00f2ff";
-            thankYou.style.fontWeight = "bold";
-            form.parentNode.insertBefore(thankYou, form.nextSibling);
-
-            // reset form
-            form.reset();
-        } else {
-            alert("Oops! There was a problem submitting your donation.");
-        }
-    }).catch(error => {
-        alert("Oops! There was a problem submitting your donation.");
-        console.error(error);
-    });
+    // Let the form submit normally
 });
 </script>
+
 
 </body>
 </html>
