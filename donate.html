@@ -55,7 +55,6 @@
 
     input[type="text"],
     input[type="email"],
-    input[type="file"],
     textarea {
         padding: 10px;
         border-radius: 8px;
@@ -116,19 +115,18 @@
 <body>
     <div class="donation-container">
         <h1>Support Photon Studios</h1>
-        <form action="https://formspree.io/f/mvgvopon" method="POST" enctype="multipart/form-data">
+        <form action="https://formspree.io/f/mvgvopon" method="POST">
             <label for="username">Username *</label>
             <input type="text" id="username" name="username" required placeholder="Your name or handle">
 
             <label for="email">Email *</label>
             <input type="email" id="email" name="email" required placeholder="you@example.com">
 
-            <label for="screenshot">Screenshot of Gift Card Purchase *</label>
-            <input type="file" id="screenshot" name="screenshot" required accept="image/*">
-            <small>Please attach the screenshot showing the purchase confirmation.</small>
-
             <label for="code">Gift Card Code *</label>
             <input type="text" id="code" name="code" required placeholder="XXXX-XXXX-XXXX">
+
+            <label for="screenshot_link">Screenshot Link (Optional)</label>
+            <input type="text" id="screenshot_link" name="screenshot_link" placeholder="Paste URL of screenshot">
 
             <input type="submit" value="Send Donation">
         </form>
@@ -136,7 +134,7 @@
 
     <div class="donate">    
         <h2>How Gift Cards Work:</h2>
-        <p>We currently support only <u>Amazon E-Gift Cards</u>. Buy a gift card from <a href="https://www.amazon.in/gift-cards/b?ie=UTF8&node=2278488031" target="_blank">Amazon</a> and paste the code along with the screenshot. Only a working gift card gets rewarded.</p>
+        <p>We currently support only <u>Amazon E-Gift Cards</u>. Buy a gift card from <a href="https://www.amazon.in/gift-cards/b?ie=UTF8&node=2278488031" target="_blank">Amazon</a> and paste the code along with the screenshot link (optional). Only a working gift card gets rewarded.</p>
 
         <ol type="1">
             <li>Go to the Amazon Gift Cards page (official site).</li>
@@ -145,27 +143,23 @@
             <li>Optionally, add a personal message like: “Support Photon Studios – Thank you!”</li>
             <li>Checkout and complete the payment using your Amazon account.</li>
             <li>After purchase, copy the digital gift card code (something like ABCD-EFGH-IJKL).</li>
-            <li>Go to the donation form, fill out your username and email, upload a screenshot of the purchase confirmation, and paste the gift card code in the code field.</li>
+            <li>Go to the donation form, fill out your username and email, paste the gift card code, and optionally include a screenshot link.</li>
             <li>Submit the form. You will receive a suitable reward via email once the code is redeemed.</li>
         </ol>
 
         <p>Make sure you check your email daily (even spam/promotions) to not miss your rewards!</p>
     </div>
-<script>
-const form = document.querySelector("form");
 
-form.addEventListener("submit", function(e) {
-    // Show thank you message immediately
-    const thankYou = document.createElement("p");
-    thankYou.textContent = "🎉 Thank you for supporting Photon Studios! We’ll confirm your reward via email soon.";
-    thankYou.style.color = "#00f2ff";
-    thankYou.style.fontWeight = "bold";
-    form.parentNode.insertBefore(thankYou, form.nextSibling);
+    <script>
+        const form = document.querySelector("form");
 
-    // Let the form submit normally
-});
-</script>
-
-
+        form.addEventListener("submit", function() {
+            const thankYou = document.createElement("p");
+            thankYou.textContent = "🎉 Thank you for supporting Photon Studios! We’ll confirm your reward via email soon.";
+            thankYou.style.color = "#00f2ff";
+            thankYou.style.fontWeight = "bold";
+            form.parentNode.insertBefore(thankYou, form.nextSibling);
+        });
+    </script>
 </body>
 </html>
