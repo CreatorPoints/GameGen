@@ -93,8 +93,7 @@
       to {transform:translateY(0); opacity:1;}
     }
 /* Spark animation */
-@keyframes sparkPulse {
-  0% {transform:scale(0.5); opacity:0;}
+
   30% {transform:scale(1.6); opacity:1;}
   100% {transform:scale(0.4); opacity:0;}
 }
@@ -124,7 +123,7 @@ document.addEventListener('mousemove', (e) => {
 });
 
 // Auto‑generating falling photon rays
-for(let i=0; i<40; i++){
+for(let i=0; i<18; i++){
   const r = document.createElement('div');
   r.className = 'photon-ray';
   r.style.left = Math.random()*100 + 'vw';
@@ -132,20 +131,6 @@ for(let i=0; i<40; i++){
   r.style.opacity = 0.15 + Math.random()*0.35;
   hero.appendChild(r);
 
-// Power sparks
-for(let j=0; j<25; j++){
-  const s = document.createElement('div');
-  s.style.position='absolute';
-  s.style.width=s.style.height=(4+Math.random()*6)+'px';
-  s.style.borderRadius='50%';
-  s.style.background='rgba(255,255,255,'+(0.4+Math.random()*0.6)+')';
-  s.style.filter='blur(2px)';
-  s.style.left=Math.random()*100+'vw';
-  s.style.top=Math.random()*100+'vh';
-  s.style.opacity=0;
-  s.style.animation=`sparkPulse ${0.8+Math.random()*1.6}s infinite ${Math.random()*2}s`;
-  hero.appendChild(s);
-}
 }
 </script>
 </body>
