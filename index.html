@@ -16,7 +16,6 @@
     color: white;
   }
 
-  /* Fullscreen video */
   #bg-video {
     position: fixed;
     top: 0;
@@ -27,7 +26,6 @@
     z-index: -2;
   }
 
-  /* Dark cosmic desk overlay */
   .dark-overlay {
     position: fixed;
     top: 0;
@@ -38,10 +36,6 @@
     z-index: -1;
   }
 
-  /* Pointer glow */
-  
-
-  /* Center text */
   .title {
     position: absolute;
     top: 40%;
@@ -52,7 +46,8 @@
     letter-spacing: 4px;
     text-shadow: 0 0 20px rgba(0,0,0,0.8);
   }
-.subtitle {
+
+  .subtitle {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -61,18 +56,18 @@
     text-align: center;
     opacity: 0.9;
     text-shadow: 0 0 10px rgba(0,0,0,0.7);
-}
+  }
 
-.buttons {
+  .buttons {
     position: absolute;
     top: 62%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     gap: 20px;
-}
+  }
 
-.btn {
+  .btn {
     padding: 12px 25px;
     border: 2px solid white;
     text-decoration: none;
@@ -81,12 +76,32 @@
     border-radius: 6px;
     backdrop-filter: blur(4px);
     transition: 0.25s;
-}
+  }
 
-.btn:hover {
+  .btn:hover {
     background: rgba(255,255,255,0.2);
     transform: scale(1.05);
-}
+  }
+
+  /* New Footer */
+  .footer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0.8;
+    font-size: 0.9rem;
+  }
+
+  .footer a {
+    color: #7ed8ff;
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
 
 </style>
 </head>
@@ -98,7 +113,6 @@
 
 <div class="dark-overlay"></div>
 
-
 <div class="title">PHOTON STUDIOS</div>
 
 <div class="subtitle">Discover the power of imagination<br>led by Photon Studios</div>
@@ -106,6 +120,10 @@
 <div class="buttons">
   <a href="photonstudio.html" class="btn">See our latest news</a>
   <a href="photonstore.html" class="btn">Shop now</a>
+</div>
+
+<div class="footer">
+  © 2025 Photon Studios • <a href="about.html">About</a> • <a href="contact.html">Contact</a>
 </div>
 
 </body>
