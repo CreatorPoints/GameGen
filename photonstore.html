@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photon Studios - Shop</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: #1b2838;
+  }
+
+  /* Fullscreen video */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  /* Dark cosmic desk overlay */
+  .dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: -1;
+  }
+
+  /* Navigation */
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  /* Main content */
+  .container {
+    padding: 100px 40px 40px;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  /* Game grid */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  .game-card {
+    background: rgba(30, 40, 50, 0.8);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+
+  .game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+
+  .game-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+  }
+
+  .game-info {
+    padding: 15px;
+  }
+
+  .game-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .game-price {
+    font-size: 1.1rem;
+    color: #5aa9e6;
+    margin-bottom: 10px;
+  }
+
+  .game-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-buy {
+    padding: 8px 15px;
+    background: #5aa9e6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-buy:hover {
+    background: #4a99d6;
+  }
+
+  .btn-wishlist {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-wishlist:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Like/Dislike system */
+  .like-system {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .like-btn, .dislike-btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: 0.2s;
+  }
+
+  .like-btn:hover, .dislike-btn:hover {
+    color: #5aa9e6;
+  }
+
+  .like-btn.active {
+    color: #4caf50;
+  }
+
+  .dislike-btn.active {
+    color: #f44336;
+  }
+
+  .rating-count {
+    font-size: 0.9rem;
+    color: #aaa;
+  }
+
+  /* Comments section */
+  .comments-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(30, 40, 50, 0.5);
+    border-radius: 8px;
+  }
+
+  .comment {
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+  }
+
+  .comment:last-child {
+    border-bottom: none;
+  }
+
+  .comment-author {
+    font-weight: bold;
+    color: #5aa9e6;
+    margin-bottom: 5px;
+  }
+
+  .comment-text {
+    color: #ccc;
+    line-height: 1.4;
+  }
+
+  .comment-date {
+    font-size: 0.8rem;
+    color: #777;
+    margin-top: 5px;
+  }
+</style>
+</head>
+<body>
+
+<video id="bg-video" autoplay muted loop>
+  <source src="videos/blackhole.mp4" type="video/mp4" />
+</video>
+
+<div class="dark-overlay"></div>
+
+<!-- Navigation -->
+<div class="navbar">
+  <div class="logo">PHOTON STUDIOS</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#news">News</a>
+    <a href="#shop">Shop</a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <h1 class="page-title">PHOTON STUDIOS GAME SHOP</h1>
+  
+  <div class="games-grid">
+    <!-- Game 1 -->
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Game+1" alt="Game 1" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Cosmic Odyssey</h3>
+        <div class="game-price">$19.99</div>
+        <div class="game-actions">
+          <button class="btn-buy">Add to Cart</button>
+          <button class="btn-wishlist">Wishlist</button>
+        </div>
+        
+        <!-- Like/Dislike System -->
+        <div class="like-system">
+          <button class="like-btn" onclick="toggleLike(this)">👍</button>
+          <span class="rating-count">245</span>
+          <button class="dislike-btn" onclick="toggleDislike(this)">👎</button>
+          <span class="rating-count">12</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game 2 -->
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Game+2" alt="Game 2" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Quantum Rift</h3>
+        <div class="game-price">$29.99</div>
+        <div class="game-actions">
+          <button class="btn-buy">Add to Cart</button>
+          <button class="btn-wishlist">Wishlist</button>
+        </div>
+        
+        <!-- Like/Dislike System -->
+        <div class="like-system">
+          <button class="like-btn" onclick="toggleLike(this)">👍</button>
+          <span class="rating-count">312</span>
+          <button class="dislike-btn" onclick="toggleDislike(this)">👎</button>
+          <span class="rating-count">8</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game 3 -->
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Game+3" alt="Game 3" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Stellar Navigator</h3>
+        <div class="game-price">$14.99</div>
+        <div class="game-actions">
+          <button class="btn-buy">Add to Cart</button>
+          <button class="btn-wishlist">Wishlist</button>
+        </div>
+        
+        <!-- Like/Dislike System -->
+        <div class="like-system">
+          <button class="like-btn" onclick="toggleLike(this)">👍</button>
+          <span class="rating-count">189</span>
+          <button class="dislike-btn" onclick="toggleDislike(this)">👎</button>
+          <span class="rating-count">23</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Game 4 -->
+    <div class="game-card">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Game+4" alt="Game 4" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Nebula Wars</h3>
+        <div class="game-price">$39.99</div>
+        <div class="game-actions">
+          <button class="btn-buy">Add to Cart</button>
+          <button class="btn-wishlist">Wishlist</button>
+        </div>
+        
+        <!-- Like/Dislike System -->
+        <div class="like-system">
+          <button class="like-btn" onclick="toggleLike(this)">👍</button>
+          <span class="rating-count">421</span>
+          <button class="dislike-btn" onclick="toggleDislike(this)">👎</button>
+          <span class="rating-count">5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h3>Community Reviews</h3>
+    
+    <div class="comment">
+      <div class="comment-author">CosmicGamer99</div>
+      <div class="comment-text">This game is absolutely incredible! The physics engine is next level and the cosmic environments are breathtaking. Highly recommend!</div>
+      <div class="comment-date">2 hours ago</div>
+    </div>
+    
+    <div class="comment">
+      <div class="comment-author">QuantumPlayer</div>
+      <div class="comment-text">Great atmosphere and challenging puzzles. The story keeps you engaged throughout. Minor frame drops on older hardware though.</div>
+      <div class="comment-date">1 day ago</div>
+    </div>
+    
+    <div class="comment">
+      <div class="comment-author">StellarExplorer</div>
+      <div class="comment-text">Beautiful visuals and innovative gameplay mechanics. The co-op mode is where this game truly shines!</div>
+      <div class="comment-date">3 days ago</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Like/Dislike functionality
+  function toggleLike(btn) {
+    const dislikeBtn = btn.nextElementSibling.nextElementSibling;
+    const likeCount = btn.nextElementSibling;
+    
+    if (btn.classList.contains('active')) {
+      btn.classList.remove('active');
+      likeCount.textContent = parseInt(likeCount.textContent) - 1;
+    } else {
+      btn.classList.add('active');
+      likeCount.textContent = parseInt(likeCount.textContent) + 1;
+      
+      // Remove dislike if liked
+      if (dislikeBtn.classList.contains('active')) {
+        dislikeBtn.classList.remove('active');
+        dislikeBtn.nextElementSibling.textContent = parseInt(dislikeBtn.nextElementSibling.textContent) - 1;
+      }
+    }
+  }
+
+  function toggleDislike(btn) {
+    const likeBtn = btn.previousElementSibling.previousElementSibling;
+    const dislikeCount = btn.nextElementSibling;
+    
+    if (btn.classList.contains('active')) {
+      btn.classList.remove('active');
+      dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+    } else {
+      btn.classList.add('active');
+      dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+      
+      // Remove like if disliked
+      if (likeBtn.classList.contains('active')) {
+        likeBtn.classList.remove('active');
+        likeBtn.nextElementSibling.textContent = parseInt(likeBtn.nextElementSibling.textContent) - 1;
+      }
+    }
+  }
+
+  // Add to cart functionality
+  document.querySelectorAll('.btn-buy').forEach(button => {
+    button.addEventListener('click', function() {
+      const gameTitle = this.closest('.game-card').querySelector('.game-title').textContent;
+      alert(`Added ${gameTitle} to cart!`);
+    });
+  });
+
+  // Wishlist functionality
+  document.querySelectorAll('.btn-wishlist').forEach(button => {
+    button.addEventListener('click', function() {
+      const gameTitle = this.closest('.game-card').querySelector('.game-title').textContent;
+      alert(`${gameTitle} added to wishlist!`);
+    });
+  });
+</script>
+
+</body>
+</html>
