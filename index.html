@@ -6,8 +6,9 @@
   <title>Photon Studios</title>
   <style>
     * {margin:0; padding:0; box-sizing:border-box;}
-    body {font-family: Poppins, sans-serif; color:white; overflow-x:hidden;}
+    body {font-family: Poppins, sans-serif; color:white; overflow-x:hidden; background:#000;}
 
+    /* Photon light-ray theme */
     .hero {
       min-height:100vh;
       width:100%;
@@ -17,22 +18,43 @@
       align-items:center;
       text-align:center;
       padding:0 20px;
-      background:url('https://images.unsplash.com/photo-1500534623283-312aade485b7') center/cover fixed;
       position:relative;
+      overflow:hidden;
+      background:#000;
     }
 
     .overlay {
       position:absolute;
       inset:0;
       background:rgba(0,0,0,0.55);
-      backdrop-filter: blur(2px);
+      backdrop-filter:blur(3px);
+      pointer-events:none;
     }
 
+    /* animated photon rays */
+    .photon-ray {
+      position:absolute;
+      width:2px;
+      height:130vh;
+      background:linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0));
+      filter:blur(1px);
+      opacity:0.35;
+      animation:fall 4s linear infinite;
+      pointer-events:none;
+    }
+
+    @keyframes fall {
+      0% {transform:translateY(-130vh) translateX(0);}    
+      100% {transform:translateY(130vh) translateX(0);}    
+    }
+
+    /* text styling */
     h1 {
       font-size:3rem;
       font-weight:700;
       opacity:0;
       animation:fadeUp 1.2s forwards 0.2s;
+      text-shadow:0 0 25px rgba(255,255,255,0.6);
     }
 
     h2 {
@@ -41,6 +63,7 @@
       font-weight:400;
       opacity:0;
       animation:fadeUp 1.2s forwards 0.5s;
+      text-shadow:0 0 15px rgba(255,255,255,0.4);
     }
 
     .btn-row {margin-top:40px; display:flex; gap:20px;}
@@ -56,22 +79,20 @@
       display:inline-block;
       opacity:0;
       animation:fadeUp 1.2s forwards 0.9s;
-      transition:0.25s;
+      transition:0.3s;
+      box-shadow:0 0 10px rgba(255,255,255,0.6);
     }
 
     .btn:hover {
       transform:scale(1.07);
-      box-shadow:0 0 15px rgba(255,255,255,0.6);
+      box-shadow:0 0 20px rgba(255,255,255,0.9);
     }
 
     @keyframes fadeUp {
       from {transform:translateY(40px); opacity:0;}
       to {transform:translateY(0); opacity:1;}
     }
-
-    /* Parallax tilt */
-    
-  </style>
+</style>
 </head>
 <body>
 
@@ -86,16 +107,25 @@
   </section>
 
 <script>
-<script>
-// Dynamic gradient following pointer
+// Dynamic photon-glow gradient
 const hero = document.getElementById('hero');
 
 document.addEventListener('mousemove', (e) => {
   const x = e.clientX / window.innerWidth * 100;
   const y = e.clientY / window.innerHeight * 100;
 
-  hero.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.18), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1500534623283-312aade485b7') center/cover fixed`;
+  hero.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.18), rgba(0,0,0,1))`;
 });
+
+// Auto-generating falling photon rays
+for(let i=0; i<18; i++){
+  const r = document.createElement('div');
+  r.className = 'photon-ray';
+  r.style.left = Math.random()*100 + 'vw';
+  r.style.animationDelay = (Math.random()*4)+'s';
+  r.style.opacity = 0.15 + Math.random()*0.35;
+  hero.appendChild(r);
+}
 </script>
 </body>
 </html>
