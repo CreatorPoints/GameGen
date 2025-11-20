@@ -1,137 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Photon Studios</title>
-  <style>
-    * {margin:0; padding:0; box-sizing:border-box;}
-    body {font-family: Poppins, sans-serif; color:white; overflow-x:hidden; background:#000;}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photon Studios</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: white;
+  }
 
-    /* Photon light‑ray theme */
-    .hero {
-      min-height:100vh;
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding:0 20px;
-      position:relative;
-      overflow:hidden;
-      background:#000;
-    }
+  /* Fullscreen video */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -2;
+  }
 
-    .overlay {
-      position:absolute;
-      inset:0;
-      background:rgba(0,0,0,0.55);
-      backdrop-filter:blur(3px);
-      pointer-events:none;
-    }
+  /* Dark cosmic desk overlay */
+  .dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: -1;
+  }
 
-    /* animated photon rays */
-    .photon-ray {
-      position:absolute;
-      width:2px;
-      height:130vh;
-      background:linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(255,255,255,0));
-      filter:blur(1px);
-      opacity:0.35;
-      animation:fall 4s linear infinite;
-      pointer-events:none;
-    }
+  /* Pointer glow */
+  .pointer-light {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
+    filter: blur(50px);
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    mix-blend-mode: screen;
+  }
 
-    @keyframes fall {
-      0% {transform:translateY(-130vh) translateX(0);}    
-      100% {transform:translateY(130vh) translateX(0);}    
-    }
-
-    /* text styling */
-    h1 {
-      font-size:3rem;
-      font-weight:700;
-      opacity:0;
-      animation:fadeUp 1.2s forwards 0.2s;
-      text-shadow:0 0 25px rgba(255,255,255,0.6);
-    }
-
-    h2 {
-      margin-top:10px;
-      font-size:1.4rem;
-      font-weight:400;
-      opacity:0;
-      animation:fadeUp 1.2s forwards 0.5s;
-      text-shadow:0 0 15px rgba(255,255,255,0.4);
-    }
-
-    .btn-row {margin-top:40px; display:flex; gap:20px;}
-
-    .btn {
-      padding:12px 28px;
-      background:#ffffff;
-      color:black;
-      border-radius:30px;
-      text-decoration:none;
-      font-size:1rem;
-      font-weight:600;
-      display:inline-block;
-      opacity:0;
-      animation:fadeUp 1.2s forwards 0.9s;
-      transition:0.3s;
-      box-shadow:0 0 10px rgba(255,255,255,0.6);
-    }
-
-    .btn:hover {
-      transform:scale(1.07);
-      box-shadow:0 0 20px rgba(255,255,255,0.9);
-    }
-
-    @keyframes fadeUp {
-      from {transform:translateY(40px); opacity:0;}
-      to {transform:translateY(0); opacity:1;}
-    }
-/* Spark animation */
-
-  30% {transform:scale(1.6); opacity:1;}
-  100% {transform:scale(0.4); opacity:0;}
-}
+  /* Center text */
+  .title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(0,0,0,0.8);
+  }
 </style>
 </head>
 <body>
 
-  <section class="hero" id="hero">
-    <div class="overlay"></div>
-    <h1>Discover the power of imagination</h1>
-    <h2>led by Photon Studios</h2>
-    <div class="btn-row">
-      <a class="btn" href="#news">See our latest news</a>
-      <a class="btn" href="#shop">Shop Now</a>
-    </div>
-  </section>
+<video id="bg-video" autoplay muted loop>
+  <source src="your-blackhole-video.mp4" type="video/mp4" />
+</video>
+
+<div class="dark-overlay"></div>
+<div class="pointer-light" id="pointerLight"></div>
+
+<div class="title">PHOTON STUDIOS</div>
 
 <script>
-// Dynamic photon‑glow gradient
-const hero = document.getElementById('hero');
-
-document.addEventListener('mousemove', (e) => {
-  const x = e.clientX / window.innerWidth * 100;
-  const y = e.clientY / window.innerHeight * 100;
-
-  hero.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.18), rgba(0,0,0,1))`;
-});
-
-// Auto‑generating falling photon rays
-for(let i=0; i<18; i++){
-  const r = document.createElement('div');
-  r.className = 'photon-ray';
-  r.style.left = Math.random()*100 + 'vw';
-  r.style.animationDelay = (Math.random()*4)+'s';
-  r.style.opacity = 0.15 + Math.random()*0.35;
-  hero.appendChild(r);
-
-}
+  const glow = document.getElementById("pointerLight");
+  document.addEventListener("mousemove", (e) => {
+    glow.style.left = e.clientX + "px";
+    glow.style.top = e.clientY + "px";
+  });
 </script>
+
 </body>
 </html>
