@@ -70,7 +70,7 @@
     }
 
     /* Parallax tilt */
-    .hero.move {transition:transform 0.2s ease-out;}
+    
   </style>
 </head>
 <body>
@@ -86,13 +86,15 @@
   </section>
 
 <script>
-// Subtle parallax tilt
+<script>
+// Dynamic gradient following pointer
 const hero = document.getElementById('hero');
 
 document.addEventListener('mousemove', (e) => {
-  const x = (window.innerWidth / 2 - e.clientX) / 60;
-  const y = (window.innerHeight / 2 - e.clientY) / 60;
-  hero.style.transform = `translate(${x}px, ${y}px)`;
+  const x = e.clientX / window.innerWidth * 100;
+  const y = e.clientY / window.innerHeight * 100;
+
+  hero.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.18), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1500534623283-312aade485b7') center/cover fixed`;
 });
 </script>
 </body>
