@@ -39,23 +39,12 @@
   }
 
   /* Pointer glow */
-  .pointer-light {
-    position: fixed;
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
-    filter: blur(50px);
-    transform: translate(-50%, -50%);
-    z-index: 5;
-    mix-blend-mode: screen;
-  }
+  
 
   /* Center text */
   .title {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 4rem;
@@ -65,7 +54,7 @@
   }
 .subtitle {
     position: absolute;
-    top: 60%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 1.5rem;
@@ -76,7 +65,7 @@
 
 .buttons {
     position: absolute;
-    top: 75%;
+    top: 62%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -104,11 +93,11 @@
 <body>
 
 <video id="bg-video" autoplay muted loop>
-  <source src="videos/blackhole.mp4" type="video/mp4" />
+  <source src="your-blackhole-video.mp4" type="video/mp4" />
 </video>
 
 <div class="dark-overlay"></div>
-<div class="pointer-light" id="pointerLight"></div>
+
 
 <div class="title">PHOTON STUDIOS</div>
 
