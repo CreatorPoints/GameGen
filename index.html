@@ -63,18 +63,61 @@
     letter-spacing: 4px;
     text-shadow: 0 0 20px rgba(0,0,0,0.8);
   }
+.subtitle {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    text-align: center;
+    opacity: 0.9;
+    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+}
+
+.buttons {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border: 2px solid white;
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    transition: 0.25s;
+}
+
+.btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
 </style>
 </head>
 <body>
 
 <video id="bg-video" autoplay muted loop>
-  <source src="your-blackhole-video.mp4" type="video/mp4" />
+  <source src="videos/blackhole.mp4" type="video/mp4" />
 </video>
 
 <div class="dark-overlay"></div>
 <div class="pointer-light" id="pointerLight"></div>
 
 <div class="title">PHOTON STUDIOS</div>
+
+<div class="subtitle">Discover the power of imagination<br>led by Photon Studios</div>
+
+<div class="buttons">
+  <a href="#news" class="btn">See our latest news</a>
+  <a href="#shop" class="btn">Shop now</a>
+</div>
 
 <script>
   const glow = document.getElementById("pointerLight");
