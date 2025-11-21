@@ -5,175 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Photon Studios - Shop</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family: Arial, sans-serif;
-    color: white;
-    background: #1b2838;
-    overflow-x: hidden;
-  }
-
-  /* Fullscreen video */
-  #bg-video {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: -2;
-  }
-
-  /* Dark overlay */
-  .dark-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.85);
-    z-index: -1;
-  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Arial,sans-serif;color:white;background:#1b2838;overflow-x:hidden;}
+  #bg-video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-2;}
+  .dark-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:-1;}
 
   /* Navbar */
-  .navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(10px);
-    z-index: 100;
-  }
-
-  .logo {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #fff;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 30px;
-  }
-
-  .nav-links a {
-    color: #ccc;
-    text-decoration: none;
-    transition: 0.3s;
-  }
-
-  .nav-links a:hover {
-    color: #fff;
-  }
-
-  #login-btn {
-    padding: 8px 15px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid white;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    font-weight: bold;
-  }
-
-  #login-btn:hover {
-    background: rgba(255,255,255,0.25);
-  }
+  .navbar{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:100;}
+  .logo{font-size:1.8rem;font-weight:bold;color:#fff;}
+  .nav-links{display:flex;gap:30px;}
+  .nav-links a{color:#ccc;text-decoration:none;transition:0.3s;}
+  .nav-links a:hover{color:#fff;}
+  #login-btn{padding:8px 15px;background:rgba(255,255,255,0.12);border:1px solid white;border-radius:6px;color:white;cursor:pointer;backdrop-filter:blur(6px);font-weight:bold;}
+  #login-btn:hover{background:rgba(255,255,255,0.25);}
 
   /* Search & Filter */
-  .search-filter {
-    display: flex;
-    justify-content: center;
-    margin-top: 100px;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
+  .search-filter{display:flex;justify-content:center;margin-top:100px;gap:15px;flex-wrap:wrap;}
+  .search-filter input, .search-filter select{padding:10px 15px;border-radius:6px;border:none;font-size:1rem;outline:none;}
+  .search-filter input{width:250px;}
 
-  .search-filter input, .search-filter select {
-    padding: 10px 15px;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
-    outline: none;
-  }
-
-  .search-filter input {
-    width: 250px;
-  }
-
-  .container {
-    padding: 20px 40px 40px;
-  }
-
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
-  }
-
-  .game-card {
-    background: rgba(30,40,50,0.8);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-    position: relative;
-  }
-
-  .game-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-  }
-
-  .game-image {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-  }
-
-  .game-info {
-    padding: 15px;
-  }
-
-  .game-title {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-  }
-
-  .game-price {
-    font-size: 1.1rem;
-    color: #5aa9e6;
-    margin-bottom: 10px;
-  }
+  /* Grid */
+  .container{padding:20px 40px 40px;}
+  .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:25px;margin-top:20px;}
+  .game-card{background:rgba(30,40,50,0.8);border-radius:8px;overflow:hidden;cursor:pointer;transition:transform 0.3s, box-shadow 0.3s;position:relative;}
+  .game-card:hover{transform:translateY(-10px);box-shadow:0 10px 25px rgba(0,0,0,0.5);}
+  .game-image{width:100%;height:170px;object-fit:cover;}
+  .game-info{padding:15px;}
+  .game-title{font-size:1.2rem;margin-bottom:8px;}
+  .game-price{font-size:1.1rem;color:#5aa9e6;margin-bottom:10px;}
 </style>
 </head>
 <body>
 
 <video id="bg-video" autoplay muted loop>
-  <source src="videos/blackhole.mp4" type="video/mp4" />
+  <source src="videos/blackhole.mp4" type="video/mp4"/>
 </video>
 <div class="dark-overlay"></div>
 
 <!-- Navbar -->
 <div class="navbar">
   <div class="logo">PHOTON STUDIOS</div>
-  <div style="display:flex; align-items:center; gap:30px;">
+  <div style="display:flex;align-items:center;gap:30px;">
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="#news">News</a>
       <a href="#shop">Shop</a>
     </div>
-    <button id="login-btn" onclick="loginOrProfile()">Login</button>
+    <button id="login-btn" onclick="login()">Login</button>
   </div>
 </div>
 
@@ -190,22 +68,37 @@
 
 <div class="container">
   <div class="games-grid" id="games-grid">
-    
-    <div class="game-card" data-category="puzzle" data-title="Portal The Last Dance" onclick="openGame(this)">
-      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Portal+The+Last+Dance" alt="Portal The Last Dance" class="game-image">
+    <!-- Game Cards -->
+    <div class="game-card" data-category="puzzle" data-title="Portal TLD" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Portal+TLD" class="game-image" alt="Portal TLD">
       <div class="game-info">
-        <h3 class="game-title">Portal The Last Dance</h3>
-        <div class="game-price">$1.99</div>
+        <h3 class="game-title">Portal TLD</h3>
+        <div class="game-price">$24.99</div>
       </div>
     </div>
 
-   
+    <div class="game-card" data-category="adventure" data-title="Cosmic Odyssey" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Cosmic+Odyssey" class="game-image" alt="Cosmic Odyssey">
+      <div class="game-info">
+        <h3 class="game-title">Cosmic Odyssey</h3>
+        <div class="game-price">$19.99</div>
+      </div>
+    </div>
 
-    <!-- Add more game cards here -->
+    <div class="game-card" data-category="action" data-title="Quantum Rift" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Quantum+Rift" class="game-image" alt="Quantum Rift">
+      <div class="game-info">
+        <h3 class="game-title">Quantum Rift</h3>
+        <div class="game-price">$29.99</div>
+      </div>
+    </div>
+
+    <!-- Add more cards here -->
   </div>
 </div>
 
 <script type="module">
+  // Firebase auth only for login button
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-app.js";
   import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-auth.js";
 
@@ -224,40 +117,30 @@
   let currentUser = null;
 
   const loginBtn = document.getElementById('login-btn');
-  function loginOrProfile() {
+
+  function login(){
     if(currentUser){
       alert(`Logged in as ${currentUser.displayName}`);
     } else {
       signInWithPopup(auth, provider)
-      .then((result) => {
-        currentUser = result.user;
-        loginBtn.textContent = currentUser.displayName;
-      })
-      .catch((err)=>console.error(err));
+        .then((result)=>{
+          currentUser = result.user;
+          loginBtn.textContent = currentUser.displayName;
+        }).catch(err=>console.error(err));
     }
   }
 
-  onAuthStateChanged(auth, user => {
-    currentUser = user;
-    if(user){
-      loginBtn.textContent = user.displayName;
-    } else {
-      loginBtn.textContent = "Login";
-    }
+  onAuthStateChanged(auth, user=>{
+    currentUser=user;
+    if(user){loginBtn.textContent=user.displayName;}
+    else{loginBtn.textContent="Login";}
   });
 
-  // Open game page, require login
+  // Open game info page
   function openGame(card){
-    if(!currentUser){
-      loginOrProfile();
-      return;
-    }
-    const title = card.getAttribute('data-title');
-    if(title === "Portal TLD"){
-      window.location.href = "portaltld.html";
-    } else {
-      alert(`Open page for ${title}`);
-    }
+    const title = card.dataset.title;
+    if(title==="Portal TLD") window.location.href="portaltld.html";
+    else alert(`Open page for ${title}`);
   }
 
   // Filter & search
@@ -268,16 +151,12 @@
   function filterGames(){
     const searchText = searchBar.value.toLowerCase();
     const category = categoryFilter.value;
-
-    gameCards.forEach(card => {
-      const title = card.getAttribute('data-title').toLowerCase();
-      const cardCategory = card.getAttribute('data-category');
-
-      if(title.includes(searchText) && (category==='all'||cardCategory===category)){
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
+    gameCards.forEach(card=>{
+      const title = card.dataset.title.toLowerCase();
+      const cardCategory = card.dataset.category;
+      if(title.includes(searchText) && (category==='all'||category===cardCategory)){
+        card.style.display='';
+      } else {card.style.display='none';}
     });
   }
 
