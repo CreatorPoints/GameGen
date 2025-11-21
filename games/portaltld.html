@@ -263,295 +263,296 @@
         </div>
     </div>
 
-    <script type="module">
-        // --- Firebase Setup ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-        // Import Firestore for likes/comments
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, increment, query, collection, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  <script type="module">
+    // --- Firebase Setup ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    // Import Firestore functions, including addDoc and deleteField
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, query, collection, orderBy, getDocs, addDoc, deleteField } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            // TODO: Replace with YOUR Firebase config from the console
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+    // --- Your Firebase Config ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsulwdk4ryzoCwpuKji5a8b-jXeG5ews4",
+        authDomain: "photon-userbase.firebaseapp.com",
+        projectId: "photon-userbase",
+        storageBucket: "photon-userbase.firebasestorage.app",
+        messagingSenderId: "66493624110",
+        appId: "1:66493624110:web:d820995afc5b2bcad354bf",
+        measurementId: "G-9RJRPKKNZV"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-        // --- State Variables ---
-        let currentUser = null;
-        const gameId = 'portal-tld'; // Unique identifier for this game page
+    // --- State Variables ---
+    let currentUser = null;
+    const gameId = 'portal-tld'; // Unique identifier for this game page
 
-        // --- DOM Elements ---
-        const loginBtn = document.getElementById('login-btn');
-        const likeBtn = document.getElementById('like-btn');
-        const dislikeBtn = document.getElementById('dislike-btn');
-        const likeCountEl = document.getElementById('like-count');
-        const dislikeCountEl = document.getElementById('dislike-count');
-        const commentInput = document.getElementById('comment-input');
-        const postCommentBtn = document.getElementById('post-comment-btn');
-        const commentListEl = document.getElementById('comment-list');
-        const commentsSortEl = document.getElementById('comments-sort');
-        const buyBtn = document.getElementById('buy-btn');
-        const demoBtn = document.getElementById('demo-btn');
+    // --- DOM Elements ---
+    const loginBtn = document.getElementById('login-btn');
+    const likeBtn = document.getElementById('like-btn');
+    const dislikeBtn = document.getElementById('dislike-btn');
+    const likeCountEl = document.getElementById('like-count');
+    const dislikeCountEl = document.getElementById('dislike-count');
+    const commentInput = document.getElementById('comment-input');
+    const postCommentBtn = document.getElementById('post-comment-btn');
+    const commentListEl = document.getElementById('comment-list');
+    const commentsSortEl = document.getElementById('comments-sort');
+    const buyBtn = document.getElementById('buy-btn');
+    const demoBtn = document.getElementById('demo-btn');
 
-        // --- Firebase Auth State ---
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                console.log("User is signed in:", user.uid);
-                loginBtn.textContent = user.displayName || user.email || 'Logged In';
-            } else {
-                console.log("No user is signed in.");
-                loginBtn.textContent = 'Login';
-            }
-        });
+    // --- Firebase Auth State ---
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (user) {
+            console.log("User is signed in:", user.uid);
+            loginBtn.textContent = user.displayName || user.email || 'Logged In';
+        } else {
+            console.log("No user is signed in.");
+            loginBtn.textContent = 'Login';
+        }
+    });
 
-        // --- Login/Logout Functionality ---
-        loginBtn.addEventListener('click', () => {
-            if (currentUser) {
-                signOut(auth).then(() => {
-                    console.log("User signed out.");
+    // --- Login/Logout Functionality ---
+    loginBtn.addEventListener('click', () => {
+        if (currentUser) {
+            signOut(auth).then(() => {
+                console.log("User signed out.");
+                // Button text will update via onAuthStateChanged
+            }).catch((error) => {
+                console.error("Sign out error:", error);
+            });
+        } else {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    currentUser = result.user;
+                    console.log('User signed in successfully:', currentUser.uid);
                     // Button text will update via onAuthStateChanged
-                }).catch((error) => {
-                    console.error("Sign out error:", error);
+                })
+                .catch((error) => {
+                    console.error('Login error:', error);
+                    alert('Login failed: ' + error.message);
                 });
-            } else {
-                signInWithPopup(auth, provider)
-                    .then((result) => {
-                        currentUser = result.user;
-                        console.log('User signed in successfully:', currentUser.uid);
-                        // Button text will update via onAuthStateChanged
-                    })
-                    .catch((error) => {
-                        console.error('Login error:', error);
-                        alert('Login failed: ' + error.message);
-                    });
-            }
+        }
+    });
+
+    // --- Game Data Functions (Placeholder for Firestore structure) ---
+    // You will need to set up these documents/collections in your Firestore console:
+    // Collection: 'games'
+    // Document ID: 'portal-tld' (or your gameId)
+    // Fields: likes: number, dislikes: number
+    // Collection: 'games' / Document: 'portal-tld' / Subcollection: 'comments'
+    // Subcollection fields: userId: string, userName: string, text: string, timestamp: date, likes: number, dislikes: number
+
+    async function loadGameRatings() {
+        // TODO: Replace 'games' with your actual collection name if different
+        const gameRef = doc(db, 'games', gameId);
+        const gameSnap = await getDoc(gameRef);
+
+        if (gameSnap.exists()) {
+            const data = gameSnap.data();
+            likeCountEl.textContent = data.likes || 0;
+            dislikeCountEl.textContent = data.dislikes || 0;
+        } else {
+            console.log("Game document does not exist, initializing...");
+            // Optionally initialize the document if it doesn't exist
+            await setDoc(gameRef, { likes: 0, dislikes: 0 });
+            likeCountEl.textContent = '0';
+            dislikeCountEl.textContent = '0';
+        }
+    }
+
+    async function loadComments() {
+        // TODO: Replace 'games' and 'comments' with your actual collection names if different
+        const commentsRef = collection(db, 'games', gameId, 'comments');
+        let q = query(commentsRef, orderBy('timestamp', 'desc')); // Default to newest first
+
+        // Apply sorting based on dropdown selection
+        const sortValue = commentsSortEl.value;
+        if (sortValue === 'oldest') {
+            q = query(commentsRef, orderBy('timestamp', 'asc'));
+        } else if (sortValue === 'popular') {
+            // Firestore doesn't support complex sorting like 'popularity' out of the box easily.
+            // You might need to add a 'popularity' field and update it, or fetch all and sort client-side.
+            // For now, we'll keep it simple with timestamp sorting.
+            q = query(commentsRef, orderBy('timestamp', 'desc')); // Keeping desc for now
+        }
+
+        const querySnapshot = await getDocs(q);
+        commentListEl.innerHTML = ''; // Clear existing comments
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const commentId = doc.id; // Firestore document ID for the comment
+
+            const commentEl = document.createElement('div');
+            commentEl.className = 'comment-item';
+            commentEl.innerHTML = `
+                <div class="comment-header">
+                    <div class="comment-author">${data.userName || 'Anonymous'}</div>
+                    <div class="comment-date">${data.timestamp?.toDate().toLocaleString() || 'Unknown Date'}</div>
+                </div>
+                <div class="comment-content">${data.text}</div>
+                <div class="comment-actions">
+                    <button class="comment-like-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👍 <span class="comment-rating-count">${data.likes || 0}</span></button>
+                    <button class="comment-dislike-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👎 <span class="comment-rating-count">${data.dislikes || 0}</span></button>
+                </div>
+            `;
+            commentListEl.appendChild(commentEl);
         });
 
-        // --- Game Data Functions (Placeholder for Firestore structure) ---
-        // You will need to set up these documents/collections in your Firestore console:
-        // Collection: 'games'
-        // Document ID: 'portal-tld' (or your gameId)
-        // Fields: likes: number, dislikes: number
-        // Collection: 'games' / Document: 'portal-tld' / Subcollection: 'comments'
-        // Subcollection fields: userId: string, userName: string, text: string, timestamp: date, likes: number, dislikes: number
+        // Add event listeners to the new like/dislike buttons for comments
+        document.querySelectorAll('.comment-like-btn, .comment-dislike-btn').forEach(btn => {
+            btn.addEventListener('click', handleCommentInteraction);
+        });
+    }
 
-        async function loadGameRatings() {
-            // TODO: Replace 'games' with your actual collection name if different
-            const gameRef = doc(db, 'games', gameId);
-            const gameSnap = await getDoc(gameRef);
 
-            if (gameSnap.exists()) {
-                const data = gameSnap.data();
-                likeCountEl.textContent = data.likes || 0;
-                dislikeCountEl.textContent = data.dislikes || 0;
+    // --- Interaction Handlers ---
+    async function handleLikeDislike(buttonType) {
+        if (!currentUser) {
+            alert('Please log in to like or dislike.');
+            return;
+        }
+
+        const gameRef = doc(db, 'games', gameId);
+        const userInteractionRef = doc(db, 'games', gameId, 'userInteractions', currentUser.uid); // Subcollection for user interactions
+
+        try {
+            // Get current user's interaction state
+            const userInteractionSnap = await getDoc(userInteractionRef);
+            const currentInteraction = userInteractionSnap.exists() ? userInteractionSnap.data().action : null;
+
+            // Determine the new action
+            const newAction = (currentInteraction === buttonType) ? null : buttonType; // Toggle off if same button clicked again
+
+            // Prepare updates for game ratings
+            const gameUpdates = {};
+            if (currentInteraction === 'like') gameUpdates.likes = increment(-1);
+            if (currentInteraction === 'dislike') gameUpdates.dislikes = increment(-1);
+            if (newAction === 'like') gameUpdates.likes = increment(1);
+            if (newAction === 'dislike') gameUpdates.dislikes = increment(1);
+
+            // Prepare updates for user interaction record
+            const userInteractionData = newAction ? { action: newAction } : null;
+
+            // Perform the updates
+            await updateDoc(gameRef, gameUpdates);
+            if (userInteractionData) {
+                await setDoc(userInteractionRef, userInteractionData);
             } else {
-                console.log("Game document does not exist, initializing...");
-                // Optionally initialize the document if it doesn't exist
-                await setDoc(gameRef, { likes: 0, dislikes: 0 });
-                likeCountEl.textContent = '0';
-                dislikeCountEl.textContent = '0';
-            }
-        }
-
-        async function loadComments() {
-            // TODO: Replace 'games' and 'comments' with your actual collection names if different
-            const commentsRef = collection(db, 'games', gameId, 'comments');
-            let q = query(commentsRef, orderBy('timestamp', 'desc')); // Default to newest first
-
-            // Apply sorting based on dropdown selection
-            const sortValue = commentsSortEl.value;
-            if (sortValue === 'oldest') {
-                q = query(commentsRef, orderBy('timestamp', 'asc'));
-            } else if (sortValue === 'popular') {
-                // Firestore doesn't support complex sorting like 'popularity' out of the box easily.
-                // You might need to add a 'popularity' field and update it, or fetch all and sort client-side.
-                // For now, we'll keep it simple with timestamp sorting.
-                q = query(commentsRef, orderBy('timestamp', 'desc')); // Keeping desc for now
+                // Use deleteField() to remove the action field if toggling off
+                await updateDoc(userInteractionRef, { action: deleteField() });
             }
 
-            const querySnapshot = await getDocs(q);
-            commentListEl.innerHTML = ''; // Clear existing comments
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                const commentId = doc.id; // Firestore document ID for the comment
-
-                const commentEl = document.createElement('div');
-                commentEl.className = 'comment-item';
-                commentEl.innerHTML = `
-                    <div class="comment-header">
-                        <div class="comment-author">${data.userName || 'Anonymous'}</div>
-                        <div class="comment-date">${data.timestamp?.toDate().toLocaleString() || 'Unknown Date'}</div>
-                    </div>
-                    <div class="comment-content">${data.text}</div>
-                    <div class="comment-actions">
-                        <button class="comment-like-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👍 <span class="comment-rating-count">${data.likes || 0}</span></button>
-                        <button class="comment-dislike-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👎 <span class="comment-rating-count">${data.dislikes || 0}</span></button>
-                    </div>
-                `;
-                commentListEl.appendChild(commentEl);
-            });
-
-            // Add event listeners to the new like/dislike buttons for comments
-            document.querySelectorAll('.comment-like-btn, .comment-dislike-btn').forEach(btn => {
-                btn.addEventListener('click', handleCommentInteraction);
-            });
-        }
-
-
-        // --- Interaction Handlers ---
-        async function handleLikeDislike(buttonType) {
-            if (!currentUser) {
-                alert('Please log in to like or dislike.');
-                return;
+            // Update UI immediately (optimistic update)
+            if (currentInteraction === 'like') {
+                likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
+                likeBtn.classList.remove('active');
             }
-
-            const gameRef = doc(db, 'games', gameId);
-            const userInteractionRef = doc(db, 'games', gameId, 'userInteractions', currentUser.uid); // Subcollection for user interactions
-
-            try {
-                // Get current user's interaction state
-                const userInteractionSnap = await getDoc(userInteractionRef);
-                const currentInteraction = userInteractionSnap.exists() ? userInteractionSnap.data().action : null;
-
-                // Determine the new action
-                const newAction = (currentInteraction === buttonType) ? null : buttonType; // Toggle off if same button clicked again
-
-                // Prepare updates for game ratings
-                const gameUpdates = {};
-                if (currentInteraction === 'like') gameUpdates.likes = increment(-1);
-                if (currentInteraction === 'dislike') gameUpdates.dislikes = increment(-1);
-                if (newAction === 'like') gameUpdates.likes = increment(1);
-                if (newAction === 'dislike') gameUpdates.dislikes = increment(1);
-
-                // Prepare updates for user interaction record
-                const userInteractionData = newAction ? { action: newAction } : null;
-
-                // Perform the updates
-                await updateDoc(gameRef, gameUpdates);
-                if (userInteractionData) {
-                    await setDoc(userInteractionRef, userInteractionData);
-                } else {
-                    await updateDoc(userInteractionRef, { action: deleteField() }); // Remove the field if toggling off
-                }
-
-                // Update UI immediately (optimistic update)
-                if (currentInteraction === 'like') {
-                    likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
-                    likeBtn.classList.remove('active');
-                }
+            if (currentInteraction === 'dislike') {
+                dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
+                dislikeBtn.classList.remove('active');
+            }
+            if (newAction === 'like') {
+                likeCountEl.textContent = parseInt(likeCountEl.textContent) + 1;
+                likeBtn.classList.add('active');
                 if (currentInteraction === 'dislike') {
                     dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
                     dislikeBtn.classList.remove('active');
                 }
-                if (newAction === 'like') {
-                    likeCountEl.textContent = parseInt(likeCountEl.textContent) + 1;
-                    likeBtn.classList.add('active');
-                    if (currentInteraction === 'dislike') {
-                        dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
-                        dislikeBtn.classList.remove('active');
-                    }
+            }
+            if (newAction === 'dislike') {
+                dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) + 1;
+                dislikeBtn.classList.add('active');
+                if (currentInteraction === 'like') {
+                    likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
+                    likeBtn.classList.remove('active');
                 }
-                if (newAction === 'dislike') {
-                    dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) + 1;
-                    dislikeBtn.classList.add('active');
-                    if (currentInteraction === 'like') {
-                        likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
-                        likeBtn.classList.remove('active');
-                    }
-                }
-
-                console.log(`User ${currentUser.uid} ${newAction ? 'set action to ' + newAction : 'removed action'} for game ${gameId}`);
-
-            } catch (error) {
-                console.error("Error updating like/dislike:", error);
-                alert("An error occurred. Please try again.");
-                // Reload ratings to revert optimistic update if needed
-                loadGameRatings();
             }
+
+            console.log(`User ${currentUser.uid} ${newAction ? 'set action to ' + newAction : 'removed action'} for game ${gameId}`);
+
+        } catch (error) {
+            console.error("Error updating like/dislike:", error);
+            alert("An error occurred. Please try again.");
+            // Reload ratings to revert optimistic update if needed
+            loadGameRatings();
+        }
+    }
+
+    async function handlePostComment() {
+        if (!currentUser) {
+            alert('Please log in to post a comment.');
+            return;
         }
 
-        async function handlePostComment() {
-            if (!currentUser) {
-                alert('Please log in to post a comment.');
-                return;
-            }
-
-            const text = commentInput.value.trim();
-            if (!text) {
-                alert('Please enter a comment.');
-                return;
-            }
-
-            try {
-                // TODO: Replace 'games' and 'comments' with your actual collection names if different
-                const commentsRef = collection(db, 'games', gameId, 'comments');
-                await addDoc(commentsRef, {
-                    userId: currentUser.uid,
-                    userName: currentUser.displayName || currentUser.email || 'Anonymous User',
-                    text: text,
-                    timestamp: new Date(), // Firestore Timestamp
-                    likes: 0,
-                    dislikes: 0
-                });
-
-                commentInput.value = ''; // Clear input
-                console.log(`Comment posted by ${currentUser.uid} for game ${gameId}`);
-                loadComments(); // Reload comments to show the new one
-            } catch (error) {
-                console.error("Error posting comment:", error);
-                alert("An error occurred posting your comment. Please try again.");
-            }
+        const text = commentInput.value.trim();
+        if (!text) {
+            alert('Please enter a comment.');
+            return;
         }
 
-        async function handleCommentInteraction(event) {
-            // This is a placeholder for future implementation.
-            // Interacting with individual comment likes/dislikes requires a more complex Firestore structure
-            // (e.g., tracking user votes on specific comments).
-            // For now, we'll just log the attempt.
-            console.log("Comment interaction attempted (not fully implemented yet).");
-            alert("Comment voting is coming soon!");
-            // TODO: Implement user-specific voting on comments in Firestore.
+        try {
+            // TODO: Replace 'games' and 'comments' with your actual collection names if different
+            const commentsRef = collection(db, 'games', gameId, 'comments');
+            // Use addDoc to create a new document in the subcollection
+            await addDoc(commentsRef, {
+                userId: currentUser.uid,
+                userName: currentUser.displayName || currentUser.email || 'Anonymous User',
+                text: text,
+                timestamp: new Date(), // Firestore Timestamp
+                likes: 0,
+                dislikes: 0
+            });
+
+            commentInput.value = ''; // Clear input
+            console.log(`Comment posted by ${currentUser.uid} for game ${gameId}`);
+            loadComments(); // Reload comments to show the new one
+        } catch (error) {
+            console.error("Error posting comment:", error);
+            alert("An error occurred posting your comment. Please try again.");
         }
+    }
 
-        // --- Event Listeners ---
-        likeBtn.addEventListener('click', () => handleLikeDislike('like'));
-        dislikeBtn.addEventListener('click', () => handleLikeDislike('dislike'));
-        postCommentBtn.addEventListener('click', handlePostComment);
-        commentsSortEl.addEventListener('change', loadComments); // Reload comments when sort changes
+    async function handleCommentInteraction(event) {
+        // This is a placeholder for future implementation.
+        // Interacting with individual comment likes/dislikes requires a more complex Firestore structure
+        // (e.g., tracking user votes on specific comments).
+        // For now, we'll just log the attempt.
+        console.log("Comment interaction attempted (not fully implemented yet).");
+        alert("Comment voting is coming soon!");
+        // TODO: Implement user-specific voting on comments in Firestore.
+    }
 
-        // TODO: Implement Buy/Download functionality
-        buyBtn.addEventListener('click', () => {
-             if (!currentUser) {
-                alert('Please log in to purchase.');
-                return;
-            }
-            // TODO: Integrate with a real payment system (e.g., Stripe, PayPal)
-            alert(`Redirecting to payment for Portal TLD ($24.99)... (Integration Required)`);
-            // Example: window.open('https://your-payment-gateway.com/checkout?game=portal-tld', '_blank');
-        });
-        demoBtn.addEventListener('click', () => {
-            // TODO: Provide a link to the demo download
-            alert('Redirecting to demo download... (Link Required)');
-            // Example: window.open('https://your-download-server.com/demo/portal-tld.zip', '_blank');
-        });
+    // --- Event Listeners ---
+    likeBtn.addEventListener('click', () => handleLikeDislike('like'));
+    dislikeBtn.addEventListener('click', () => handleLikeDislike('dislike'));
+    postCommentBtn.addEventListener('click', handlePostComment);
+    commentsSortEl.addEventListener('change', loadComments); // Reload comments when sort changes
 
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            await loadGameRatings();
-            await loadComments();
-        });
+    // TODO: Implement Buy/Download functionality
+    buyBtn.addEventListener('click', () => {
+         if (!currentUser) {
+            alert('Please log in to purchase.');
+            return;
+        }
+        // TODO: Integrate with a real payment system (e.g., Stripe, PayPal)
+        alert(`Redirecting to payment for Portal TLD ($24.99)... (Integration Required)`);
+        // Example: window.open('https://your-payment-gateway.com/checkout?game=portal-tld', '_blank');
+    });
+    demoBtn.addEventListener('click', () => {
+        // TODO: Provide a link to the demo download
+        alert('Redirecting to demo download... (Link Required)');
+        // Example: window.open('https://your-download-server.com/demo/portal-tld.zip', '_blank');
+    });
 
-    </script>
-</body>
-</html>
+    // --- Initial Load ---
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadGameRatings();
+        await loadComments();
+    });
+
+</script>
