@@ -1,120 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photon Store</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Photon Studios - Shop</title>
 <style>
-body {margin:0;font-family:Arial;color:white;background:#1b2838;overflow-x:hidden;}
-#bg-video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-2;}
-.dark-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:-1;}
-.navbar{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 40px;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:100;}
-.navbar .logo{font-size:1.8rem;font-weight:bold;color:#fff;}
-.nav-links a{margin-left:25px;color:#ccc;text-decoration:none;transition:.3s;}
-.nav-links a:hover{color:#fff;}
-#login-btn{padding:8px 15px;background:rgba(255,255,255,0.12);border:1px solid white;border-radius:6px;color:white;cursor:pointer;backdrop-filter:blur(6px);}
-#login-btn:hover{background:rgba(255,255,255,0.25);}
-.top-bar{margin-top:100px;display:flex;justify-content:center;gap:15px;}
-.search-box{padding:10px 15px;border-radius:8px;border:none;outline:none;width:260px;}
-.filter-select{padding:10px 15px;border-radius:8px;border:none;outline:none;}
-#game-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;padding:20px 40px;}
-.game-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);padding:20px;border-radius:14px;backdrop-filter:blur(6px);text-align:center;transition:.3s;cursor:pointer;}
-.game-card:hover{background:rgba(255,255,255,0.15);transform:scale(1.05);}
-.thumb{width:100%;height:150px;border-radius:10px;object-fit:cover;margin-bottom:10px;}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    color: white;
+    background: #1b2838;
+    overflow-x: hidden;
+  }
+
+  /* Fullscreen video */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  /* Dark overlay */
+  .dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.85);
+    z-index: -1;
+  }
+
+  /* Navbar */
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  #login-btn {
+    padding: 8px 15px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid white;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    font-weight: bold;
+  }
+
+  #login-btn:hover {
+    background: rgba(255,255,255,0.25);
+  }
+
+  /* Search & Filter */
+  .search-filter {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .search-filter input, .search-filter select {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  .search-filter input {
+    width: 250px;
+  }
+
+  .container {
+    padding: 20px 40px 40px;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  .game-card {
+    background: rgba(30,40,50,0.8);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+
+  .game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  }
+
+  .game-image {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+  }
+
+  .game-info {
+    padding: 15px;
+  }
+
+  .game-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .game-price {
+    font-size: 1.1rem;
+    color: #5aa9e6;
+    margin-bottom: 10px;
+  }
 </style>
 </head>
 <body>
 
 <video id="bg-video" autoplay muted loop>
-  <source src="videos/blackhole.mp4" type="video/mp4">
+  <source src="videos/blackhole.mp4" type="video/mp4" />
 </video>
 <div class="dark-overlay"></div>
 
+<!-- Navbar -->
 <div class="navbar">
   <div class="logo">PHOTON STUDIOS</div>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="#news">News</a>
-    <a href="#shop">Shop</a>
+  <div style="display:flex; align-items:center; gap:30px;">
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#news">News</a>
+      <a href="#shop">Shop</a>
+    </div>
     <button id="login-btn" onclick="loginOrProfile()">Login</button>
   </div>
 </div>
 
-<div class="top-bar">
-  <input class="search-box" id="search-input" placeholder="Search games…">
-  <select class="filter-select" id="filter-select">
-    <option value="all">All</option>
+<!-- Search & Filter -->
+<div class="search-filter">
+  <input type="text" id="search-bar" placeholder="Search games...">
+  <select id="category-filter">
+    <option value="all">All Categories</option>
     <option value="puzzle">Puzzle</option>
     <option value="action">Action</option>
-    <option value="horror">Horror</option>
+    <option value="adventure">Adventure</option>
   </select>
 </div>
 
-<div id="game-list"></div>
+<div class="container">
+  <div class="games-grid" id="games-grid">
+    <!-- Example Game Cards -->
+    <div class="game-card" data-category="puzzle" data-title="Portal TLD" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Portal+TLD" alt="Portal TLD" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Portal TLD</h3>
+        <div class="game-price">$24.99</div>
+      </div>
+    </div>
+
+    <div class="game-card" data-category="adventure" data-title="Cosmic Odyssey" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Cosmic+Odyssey" alt="Cosmic Odyssey" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Cosmic Odyssey</h3>
+        <div class="game-price">$19.99</div>
+      </div>
+    </div>
+
+    <div class="game-card" data-category="action" data-title="Quantum Rift" onclick="openGame(this)">
+      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Quantum+Rift" alt="Quantum Rift" class="game-image">
+      <div class="game-info">
+        <h3 class="game-title">Quantum Rift</h3>
+        <div class="game-price">$29.99</div>
+      </div>
+    </div>
+
+    <!-- Add more game cards here -->
+  </div>
+</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER",
-  appId: "YOUR_APP_ID"
-};
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  let currentUser = null;
 
-const games = [
-  {id:"portaltld",name:"Portal: The Lost Dimension",desc:"Physics-bending experiment deep in Aperture archives.",category:"puzzle",image:"images/portal_tld.jpg"},
-  {id:"cosmicodyssey",name:"Cosmic Odyssey",desc:"Explore the stars and beyond!",category:"action",image:"images/cosmic_odyssey.jpg"},
-  {id:"nebulawars",name:"Nebula Wars",desc:"Space strategy and battles.",category:"action",image:"images/nebula_wars.jpg"},
-  {id:"stellarnav",name:"Stellar Navigator",desc:"Navigate through endless stars.",category:"puzzle",image:"images/stellar_navigator.jpg"},
-];
+  const loginBtn = document.getElementById('login-btn');
+  function loginOrProfile() {
+    if(currentUser){
+      alert(`Logged in as ${currentUser.displayName}`);
+    } else {
+      signInWithPopup(auth, provider)
+      .then((result) => {
+        currentUser = result.user;
+        loginBtn.textContent = currentUser.displayName;
+      })
+      .catch((err)=>console.error(err));
+    }
+  }
 
-function loadGames(filter="all", search=""){
-  const container=document.getElementById("game-list");
-  container.innerHTML="";
-  games.filter(g=>filter==="all"||g.category===filter)
-       .filter(g=>g.name.toLowerCase().includes(search.toLowerCase()))
-       .forEach(g=>{
-         container.innerHTML+=`
-         <div class="game-card" onclick="openGame('${g.id}')">
-           <img class="thumb" src="${g.image}">
-           <h2>${g.name}</h2>
-           <p>${g.desc}</p>
-         </div>`;
-       });
-}
-
-loadGames();
-
-document.getElementById("search-input").addEventListener("input", e=>{
-  loadGames(document.getElementById("filter-select").value, e.target.value);
-});
-document.getElementById("filter-select").addEventListener("change", e=>{
-  loadGames(e.target.value, document.getElementById("search-input").value);
-});
-
-window.loginOrProfile=function(){
-  onAuthStateChanged(auth,user=>{
-    if(user){ window.location.href="profile.html"; }
-    else{ signInWithPopup(auth,provider); }
+  onAuthStateChanged(auth, user => {
+    currentUser = user;
+    if(user){
+      loginBtn.textContent = user.displayName;
+    } else {
+      loginBtn.textContent = "Login";
+    }
   });
-};
 
-window.openGame=function(id){
-  onAuthStateChanged(auth,user=>{
-    if(!user){ signInWithPopup(auth,provider).then(()=>window.location.href=`games/${id}.html`); return; }
-    window.location.href=`games/${id}.html`;
-  });
-};
+  // Open game page, require login
+  function openGame(card){
+    if(!currentUser){
+      loginOrProfile();
+      return;
+    }
+    const title = card.getAttribute('data-title');
+    if(title === "Portal TLD"){
+      window.location.href = "portaltld.html";
+    } else {
+      alert(`Open page for ${title}`);
+    }
+  }
+
+  // Filter & search
+  const searchBar = document.getElementById('search-bar');
+  const categoryFilter = document.getElementById('category-filter');
+  const gameCards = document.querySelectorAll('.game-card');
+
+  function filterGames(){
+    const searchText = searchBar.value.toLowerCase();
+    const category = categoryFilter.value;
+
+    gameCards.forEach(card => {
+      const title = card.getAttribute('data-title').toLowerCase();
+      const cardCategory = card.getAttribute('data-category');
+
+      if(title.includes(searchText) && (category==='all'||cardCategory===category)){
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  searchBar.addEventListener('input', filterGames);
+  categoryFilter.addEventListener('change', filterGames);
 </script>
 
 </body>
