@@ -92,7 +92,7 @@
         .meta-item { background: rgba(50, 60, 70, 0.6); padding: 8px 15px; border-radius: 4px; }
         .game-description { max-width: 800px; margin: 0 auto 30px; line-height: 1.6; }
         .game-actions { text-align: center; margin-bottom: 30px; }
-        .btn-buy, .btn-download {
+        .btn-buy, .btn-wish {
             padding: 12px 25px;
             border: none;
             border-radius: 4px;
@@ -103,8 +103,9 @@
         }
         .btn-buy { background: #5aa9e6; color: white; }
         .btn-buy:hover { background: #4a99d6; }
-        .btn-download { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid #555; }
-        .btn-download:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-wish { background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid #555; }
+        .btn-wish:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-wish.active { background: #4caf50; } /* Visual feedback when added */
         .like-dislike-section {
             text-align: center;
             margin: 20px 0 40px;
@@ -264,365 +265,430 @@
         </div>
     </div>
 
-  <script type="module">
-    // --- Firebase Setup ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-    // Import Firestore functions, including addDoc, deleteField, arrayUnion, arrayRemove
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, query, collection, orderBy, getDocs, addDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    <script type="module">
+        // --- Firebase Setup ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        // Import Firestore functions, including addDoc, deleteField, arrayUnion, arrayRemove
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, query, collection, orderBy, getDocs, addDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-    // --- Your Firebase Config ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyCsulwdk4ryzoCwpuKji5a8b-jXeG5ews4",
-        authDomain: "photon-userbase.firebaseapp.com",
-        projectId: "photon-userbase",
-        storageBucket: "photon-userbase.firebasestorage.app",
-        messagingSenderId: "66493624110",
-        appId: "1:66493624110:web:d820995afc5b2bcad354bf",
-        measurementId: "G-9RJRPKKNZV"
-    };
+        // --- Your Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsulwdk4ryzoCwpuKji5a8b-jXeG5ews4",
+            authDomain: "photon-userbase.firebaseapp.com",
+            projectId: "photon-userbase",
+            storageBucket: "photon-userbase.firebasestorage.app",
+            messagingSenderId: "66493624110",
+            appId: "1:66493624110:web:d820995afc5b2bcad354bf",
+            measurementId: "G-9RJRPKKNZV"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-    // --- State Variables ---
-    let currentUser = null;
-    const gameId = 'portal-tld'; // Unique identifier for this game page
+        // --- State Variables ---
+        let currentUser = null;
+        const gameId = 'portal-tld'; // Unique identifier for this game page
 
-    // --- DOM Elements ---
-    const loginBtn = document.getElementById('login-btn');
-    const likeBtn = document.getElementById('like-btn');
-    const dislikeBtn = document.getElementById('dislike-btn');
-    const likeCountEl = document.getElementById('like-count');
-    const dislikeCountEl = document.getElementById('dislike-count');
-    const commentInput = document.getElementById('comment-input');
-    const postCommentBtn = document.getElementById('post-comment-btn');
-    const commentListEl = document.getElementById('comment-list');
-    const commentsSortEl = document.getElementById('comments-sort');
-    const buyBtn = document.getElementById('buy-btn');
-    const wishBtn = document.getElementById('wish-btn'); // Get the wishlist button
+        // --- DOM Elements ---
+        const loginBtn = document.getElementById('login-btn');
+        const likeBtn = document.getElementById('like-btn');
+        const dislikeBtn = document.getElementById('dislike-btn');
+        const likeCountEl = document.getElementById('like-count');
+        const dislikeCountEl = document.getElementById('dislike-count');
+        const commentInput = document.getElementById('comment-input');
+        const postCommentBtn = document.getElementById('post-comment-btn');
+        const commentListEl = document.getElementById('comment-list');
+        const commentsSortEl = document.getElementById('comments-sort');
+        const buyBtn = document.getElementById('buy-btn');
+        const wishBtn = document.getElementById('wish-btn'); // Get the wishlist button
 
-    // --- Firebase Auth State ---
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-        if (user) {
-            console.log("User is signed in:", user.uid);
-            loginBtn.textContent = user.displayName || user.email || 'Logged In';
-            // Check wishlist status when user logs in
-            checkWishlistStatus();
-        } else {
-            console.log("No user is signed in.");
-            loginBtn.textContent = 'Login';
-            // Reset wishlist button state when logged out
-            wishBtn.textContent = 'Add to Wishlist';
-            wishBtn.disabled = false;
-        }
-    });
-
-    // --- Login/Logout Functionality ---
-    loginBtn.addEventListener('click', () => {
-        if (currentUser) {
-            signOut(auth).then(() => {
-                console.log("User signed out.");
-                // Button text will update via onAuthStateChanged
-            }).catch((error) => {
-                console.error("Sign out error:", error);
-            });
-        } else {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    currentUser = result.user;
-                    console.log('User signed in successfully:', currentUser.uid);
-                    // Button text will update via onAuthStateChanged
-                })
-                .catch((error) => {
-                    console.error('Login error:', error);
-                    alert('Login failed: ' + error.message);
-                });
-        }
-    });
-
-    // --- Wishlist Functionality ---
-    async function checkWishlistStatus() {
-        if (!currentUser) return;
-
-        try {
-            // Get the user's profile document
-            const userRef = doc(db, 'users', currentUser.uid); // Assuming a 'users' collection
+        // --- Helper function to ensure user profile exists ---
+        // Creates a user profile document with an empty wishlist if it doesn't exist.
+        async function ensureUserProfile(userId) {
+            const userRef = doc(db, 'users', userId);
             const userSnap = await getDoc(userRef);
 
-            if (userSnap.exists()) {
-                const userData = userSnap.data();
-                const wishlist = userData.wishlist || [];
-                if (wishlist.includes(gameId)) {
-                    wishBtn.textContent = 'Remove from Wishlist';
-                    wishBtn.classList.add('active'); // Optional: Add a visual class
+            if (!userSnap.exists()) {
+                console.log(`User profile for ${userId} does not exist, creating...`);
+                try {
+                    await setDoc(userRef, {
+                        wishlist: [],
+                        // Add other user profile fields here if needed
+                    });
+                    console.log(`User profile for ${userId} created.`);
+                } catch (error) {
+                    console.error("Error creating user profile:", error);
+                    throw error; // Re-throw to handle in the calling function
+                }
+            } else {
+                console.log(`User profile for ${userId} already exists.`);
+            }
+        }
+
+
+        // --- Firebase Auth State ---
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            if (user) {
+                console.log("User is signed in:", user.uid);
+                loginBtn.textContent = user.displayName || user.email || 'Logged In';
+
+                // Ensure user profile exists before checking/interacting with wishlist
+                try {
+                    await ensureUserProfile(user.uid);
+                    // Check wishlist status after profile is ensured
+                    checkWishlistStatus();
+                } catch (error) {
+                    console.error("Failed to initialize user profile or check wishlist:", error);
+                    // Optionally disable wishlist button or show an error message
+                    wishBtn.disabled = true;
+                    wishBtn.textContent = 'Error loading wishlist';
+                }
+            } else {
+                console.log("No user is signed in.");
+                loginBtn.textContent = 'Login';
+                // Reset wishlist button state when logged out
+                wishBtn.textContent = 'Add to Wishlist';
+                wishBtn.classList.remove('active');
+                wishBtn.disabled = false; // Re-enable if it was disabled
+            }
+        });
+
+        // --- Login/Logout Functionality ---
+        loginBtn.addEventListener('click', () => {
+            if (currentUser) {
+                signOut(auth).then(() => {
+                    console.log("User signed out.");
+                    // Button text will update via onAuthStateChanged
+                }).catch((error) => {
+                    console.error("Sign out error:", error);
+                });
+            } else {
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        currentUser = result.user;
+                        console.log('User signed in successfully:', currentUser.uid);
+                        // Button text will update via onAuthStateChanged
+                    })
+                    .catch((error) => {
+                        console.error('Login error:', error);
+                        alert('Login failed: ' + error.message);
+                    });
+            }
+        });
+
+        // --- Wishlist Functionality ---
+        // Checks if the current game is in the user's wishlist and updates the button UI.
+        async function checkWishlistStatus() {
+            if (!currentUser) return;
+
+            try {
+                // Get the user's profile document
+                const userRef = doc(db, 'users', currentUser.uid);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    const wishlist = userData.wishlist || [];
+                    if (wishlist.includes(gameId)) {
+                        wishBtn.textContent = 'Remove from Wishlist';
+                        wishBtn.classList.add('active'); // Add visual class
+                    } else {
+                        wishBtn.textContent = 'Add to Wishlist';
+                        wishBtn.classList.remove('active');
+                    }
                 } else {
+                    // This shouldn't happen if ensureUserProfile is called correctly,
+                    // but handle gracefully just in case.
+                    console.warn(`User profile for ${currentUser.uid} missing after ensureUserProfile!`);
                     wishBtn.textContent = 'Add to Wishlist';
                     wishBtn.classList.remove('active');
                 }
-            } else {
-                // If user document doesn't exist, assume they are not on the wishlist
-                wishBtn.textContent = 'Add to Wishlist';
-                wishBtn.classList.remove('active');
+            } catch (error) {
+                console.error("Error checking wishlist status:", error);
+                // Optionally alert the user or just log the error
+                // You might want to disable the button temporarily
+                wishBtn.disabled = true;
+                wishBtn.textContent = 'Error checking wishlist';
             }
-        } catch (error) {
-            console.error("Error checking wishlist status:", error);
-            // Optionally alert the user or just log the error
-        }
-    }
-
-    async function handleWishlistToggle() {
-        if (!currentUser) {
-            alert('Please log in to manage your wishlist.');
-            return;
         }
 
-        const userRef = doc(db, 'users', currentUser.uid); // Assuming a 'users' collection
-        let isCurrentlyWishlisted = wishBtn.textContent.includes('Remove');
-
-        try {
-            if (isCurrentlyWishlisted) {
-                // Remove game from wishlist
-                await updateDoc(userRef, {
-                    wishlist: arrayRemove(gameId)
-                });
-                wishBtn.textContent = 'Add to Wishlist';
-                wishBtn.classList.remove('active');
-                console.log(`Game ${gameId} removed from ${currentUser.uid}'s wishlist`);
-            } else {
-                // Add game to wishlist
-                await updateDoc(userRef, {
-                    wishlist: arrayUnion(gameId) // Use arrayUnion to add to the list
-                });
-                wishBtn.textContent = 'Remove from Wishlist';
-                wishBtn.classList.add('active');
-                console.log(`Game ${gameId} added to ${currentUser.uid}'s wishlist`);
-            }
-        } catch (error) {
-            console.error("Error updating wishlist:", error);
-            alert("An error occurred updating your wishlist. Please try again.");
-            // Optionally reload the status to revert UI if needed
-            checkWishlistStatus();
-        }
-    }
-
-    // --- Game Data Functions (Placeholder for Firestore structure) ---
-    // You will need to set up these documents/collections in your Firestore console:
-    // Collection: 'games'
-    // Document ID: 'portal-tld' (or your gameId)
-    // Fields: likes: number, dislikes: number
-    // Collection: 'games' / Document: 'portal-tld' / Subcollection: 'comments'
-    // Subcollection fields: userId: string, userName: string, text: string, timestamp: date, likes: number, dislikes: number
-    // Collection: 'users' / Document ID: '{userId}' (The user's UID)
-    // Fields: wishlist: array of strings (game IDs)
-
-    async function loadGameRatings() {
-        // TODO: Replace 'games' with your actual collection name if different
-        const gameRef = doc(db, 'games', gameId);
-        const gameSnap = await getDoc(gameRef);
-
-        if (gameSnap.exists()) {
-            const data = gameSnap.data();
-            likeCountEl.textContent = data.likes || 0;
-            dislikeCountEl.textContent = data.dislikes || 0;
-        } else {
-            console.log("Game document does not exist, initializing...");
-            // Optionally initialize the document if it doesn't exist
-            await setDoc(gameRef, { likes: 0, dislikes: 0 });
-            likeCountEl.textContent = '0';
-            dislikeCountEl.textContent = '0';
-        }
-    }
-
-    async function loadComments() {
-        // TODO: Replace 'games' and 'comments' with your actual collection names if different
-        const commentsRef = collection(db, 'games', gameId, 'comments');
-        let q = query(commentsRef, orderBy('timestamp', 'desc')); // Default to newest first
-
-        // Apply sorting based on dropdown selection
-        const sortValue = commentsSortEl.value;
-        if (sortValue === 'oldest') {
-            q = query(commentsRef, orderBy('timestamp', 'asc'));
-        } else if (sortValue === 'popular') {
-            // Firestore doesn't support complex sorting like 'popularity' out of the box easily.
-            // You might need to add a 'popularity' field and update it, or fetch all and sort client-side.
-            // For now, we'll keep it simple with timestamp sorting.
-            q = query(commentsRef, orderBy('timestamp', 'desc')); // Keeping desc for now
-        }
-
-        const querySnapshot = await getDocs(q);
-        commentListEl.innerHTML = ''; // Clear existing comments
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const commentId = doc.id; // Firestore document ID for the comment
-
-            const commentEl = document.createElement('div');
-            commentEl.className = 'comment-item';
-            commentEl.innerHTML = `
-                <div class="comment-header">
-                    <div class="comment-author">${data.userName || 'Anonymous'}</div>
-                    <div class="comment-date">${data.timestamp?.toDate().toLocaleString() || 'Unknown Date'}</div>
-                </div>
-                <div class="comment-content">${data.text}</div>
-                <div class="comment-actions">
-                    <button class="comment-like-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👍 <span class="comment-rating-count">${data.likes || 0}</span></button>
-                    <button class="comment-dislike-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👎 <span class="comment-rating-count">${data.dislikes || 0}</span></button>
-                </div>
-            `;
-            commentListEl.appendChild(commentEl);
-        });
-
-        // Add event listeners to the new like/dislike buttons for comments
-        document.querySelectorAll('.comment-like-btn, .comment-dislike-btn').forEach(btn => {
-            btn.addEventListener('click', handleCommentInteraction);
-        });
-    }
-
-
-    // --- Interaction Handlers ---
-    async function handleLikeDislike(buttonType) {
-        if (!currentUser) {
-            alert('Please log in to like or dislike.');
-            return;
-        }
-
-        const gameRef = doc(db, 'games', gameId);
-        const userInteractionRef = doc(db, 'games', gameId, 'userInteractions', currentUser.uid); // Subcollection for user interactions
-
-        try {
-            // Get current user's interaction state
-            const userInteractionSnap = await getDoc(userInteractionRef);
-            const currentInteraction = userInteractionSnap.exists() ? userInteractionSnap.data().action : null;
-
-            // Determine the new action
-            const newAction = (currentInteraction === buttonType) ? null : buttonType; // Toggle off if same button clicked again
-
-            // Prepare updates for game ratings
-            const gameUpdates = {};
-            if (currentInteraction === 'like') gameUpdates.likes = increment(-1);
-            if (currentInteraction === 'dislike') gameUpdates.dislikes = increment(-1);
-            if (newAction === 'like') gameUpdates.likes = increment(1);
-            if (newAction === 'dislike') gameUpdates.dislikes = increment(1);
-
-            // Prepare updates for user interaction record
-            const userInteractionData = newAction ? { action: newAction } : null;
-
-            // Perform the updates
-            await updateDoc(gameRef, gameUpdates);
-            if (userInteractionData) {
-                await setDoc(userInteractionRef, userInteractionData);
-            } else {
-                // Use deleteField() to remove the action field if toggling off
-                await updateDoc(userInteractionRef, { action: deleteField() });
+        // Handles adding/removing the game from the user's wishlist.
+        async function handleWishlistToggle() {
+            if (!currentUser) {
+                alert('Please log in to manage your wishlist.');
+                return;
             }
 
-            // Update UI immediately (optimistic update)
-            if (currentInteraction === 'like') {
-                likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
-                likeBtn.classList.remove('active');
-            }
-            if (currentInteraction === 'dislike') {
-                dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
-                dislikeBtn.classList.remove('active');
-            }
-            if (newAction === 'like') {
-                likeCountEl.textContent = parseInt(likeCountEl.textContent) + 1;
-                likeBtn.classList.add('active');
-                if (currentInteraction === 'dislike') {
-                    dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
-                    dislikeBtn.classList.remove('active');
+            // Re-enable button just in case it was disabled by an error
+            wishBtn.disabled = false;
+
+            const userRef = doc(db, 'users', currentUser.uid);
+            let isCurrentlyWishlisted = wishBtn.textContent.includes('Remove');
+
+            try {
+                if (isCurrentlyWishlisted) {
+                    // Remove game from wishlist
+                    await updateDoc(userRef, {
+                        wishlist: arrayRemove(gameId)
+                    });
+                    wishBtn.textContent = 'Add to Wishlist';
+                    wishBtn.classList.remove('active');
+                    console.log(`Game ${gameId} removed from ${currentUser.uid}'s wishlist`);
+                } else {
+                    // Add game to wishlist
+                    await updateDoc(userRef, {
+                        wishlist: arrayUnion(gameId) // Use arrayUnion to add to the list
+                    });
+                    wishBtn.textContent = 'Remove from Wishlist';
+                    wishBtn.classList.add('active');
+                    console.log(`Game ${gameId} added to ${currentUser.uid}'s wishlist`);
                 }
+            } catch (error) {
+                console.error("Error updating wishlist:", error);
+                alert("An error occurred updating your wishlist. Please try again.");
+                // Reload the status to revert UI if needed
+                checkWishlistStatus();
             }
-            if (newAction === 'dislike') {
-                dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) + 1;
-                dislikeBtn.classList.add('active');
+        }
+
+        // --- Game Data Functions (Placeholder for Firestore structure) ---
+        // You will need to set up these documents/collections in your Firestore console:
+        // Collection: 'games'
+        // Document ID: 'portal-tld' (or your gameId)
+        // Fields: likes: number, dislikes: number
+        // Collection: 'games' / Document: 'portal-tld' / Subcollection: 'comments'
+        // Subcollection fields: userId: string, userName: string, text: string, timestamp: date, likes: number, dislikes: number
+        // Collection: 'users' / Document ID: '{userId}' (The user's UID)
+        // Fields: wishlist: array of strings (game IDs)
+
+        // Loads the like/dislike counts for the game from Firestore.
+        async function loadGameRatings() {
+            // TODO: Replace 'games' with your actual collection name if different
+            const gameRef = doc(db, 'games', gameId);
+            try {
+                const gameSnap = await getDoc(gameRef);
+
+                if (gameSnap.exists()) {
+                    const data = gameSnap.data();
+                    likeCountEl.textContent = data.likes || 0;
+                    dislikeCountEl.textContent = data.dislikes || 0;
+                } else {
+                    console.log("Game document does not exist, initializing...");
+                    // Optionally initialize the document if it doesn't exist
+                    await setDoc(gameRef, { likes: 0, dislikes: 0 });
+                    likeCountEl.textContent = '0';
+                    dislikeCountEl.textContent = '0';
+                }
+            } catch (error) {
+                console.error("Error loading game ratings:", error);
+                // Optionally update UI to show error state
+                likeCountEl.textContent = 'Err';
+                dislikeCountEl.textContent = 'Err';
+            }
+        }
+
+        // Loads the comments for the game from Firestore.
+        async function loadComments() {
+            // TODO: Replace 'games' and 'comments' with your actual collection names if different
+            const commentsRef = collection(db, 'games', gameId, 'comments');
+            let q = query(commentsRef, orderBy('timestamp', 'desc')); // Default to newest first
+
+            // Apply sorting based on dropdown selection
+            const sortValue = commentsSortEl.value;
+            if (sortValue === 'oldest') {
+                q = query(commentsRef, orderBy('timestamp', 'asc'));
+            } else if (sortValue === 'popular') {
+                // Firestore doesn't support complex sorting like 'popularity' out of the box easily.
+                // You might need to add a 'popularity' field and update it, or fetch all and sort client-side.
+                // For now, we'll keep it simple with timestamp sorting.
+                q = query(commentsRef, orderBy('timestamp', 'desc')); // Keeping desc for now
+            }
+
+            try {
+                const querySnapshot = await getDocs(q);
+                commentListEl.innerHTML = ''; // Clear existing comments
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const commentId = doc.id; // Firestore document ID for the comment
+
+                    const commentEl = document.createElement('div');
+                    commentEl.className = 'comment-item';
+                    commentEl.innerHTML = `
+                        <div class="comment-header">
+                            <div class="comment-author">${data.userName || 'Anonymous'}</div>
+                            <div class="comment-date">${data.timestamp?.toDate().toLocaleString() || 'Unknown Date'}</div>
+                        </div>
+                        <div class="comment-content">${data.text}</div>
+                        <div class="comment-actions">
+                            <button class="comment-like-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👍 <span class="comment-rating-count">${data.likes || 0}</span></button>
+                            <button class="comment-dislike-btn" data-comment-id="${commentId}" data-user-id="${currentUser?.uid || ''}">👎 <span class="comment-rating-count">${data.dislikes || 0}</span></button>
+                        </div>
+                    `;
+                    commentListEl.appendChild(commentEl);
+                });
+
+                // Add event listeners to the new like/dislike buttons for comments
+                document.querySelectorAll('.comment-like-btn, .comment-dislike-btn').forEach(btn => {
+                    btn.addEventListener('click', handleCommentInteraction);
+                });
+            } catch (error) {
+                console.error("Error loading comments:", error);
+                // Optionally update UI to show error state
+                commentListEl.innerHTML = '<p>Error loading comments.</p>';
+            }
+        }
+
+
+        // --- Interaction Handlers ---
+        // Handles user likes/dislikes for the game itself.
+        async function handleLikeDislike(buttonType) {
+            if (!currentUser) {
+                alert('Please log in to like or dislike.');
+                return;
+            }
+
+            const gameRef = doc(db, 'games', gameId);
+            const userInteractionRef = doc(db, 'games', gameId, 'userInteractions', currentUser.uid); // Subcollection for user interactions
+
+            try {
+                // Get current user's interaction state
+                const userInteractionSnap = await getDoc(userInteractionRef);
+                const currentInteraction = userInteractionSnap.exists() ? userInteractionSnap.data().action : null;
+
+                // Determine the new action
+                const newAction = (currentInteraction === buttonType) ? null : buttonType; // Toggle off if same button clicked again
+
+                // Prepare updates for game ratings
+                const gameUpdates = {};
+                if (currentInteraction === 'like') gameUpdates.likes = increment(-1);
+                if (currentInteraction === 'dislike') gameUpdates.dislikes = increment(-1);
+                if (newAction === 'like') gameUpdates.likes = increment(1);
+                if (newAction === 'dislike') gameUpdates.dislikes = increment(1);
+
+                // Prepare updates for user interaction record
+                const userInteractionData = newAction ? { action: newAction } : null;
+
+                // Perform the updates
+                await updateDoc(gameRef, gameUpdates);
+                if (userInteractionData) {
+                    await setDoc(userInteractionRef, userInteractionData);
+                } else {
+                    // Use deleteField() to remove the action field if toggling off
+                    await updateDoc(userInteractionRef, { action: deleteField() });
+                }
+
+                // Update UI immediately (optimistic update)
                 if (currentInteraction === 'like') {
                     likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
                     likeBtn.classList.remove('active');
                 }
+                if (currentInteraction === 'dislike') {
+                    dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
+                    dislikeBtn.classList.remove('active');
+                }
+                if (newAction === 'like') {
+                    likeCountEl.textContent = parseInt(likeCountEl.textContent) + 1;
+                    likeBtn.classList.add('active');
+                    if (currentInteraction === 'dislike') {
+                        dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) - 1;
+                        dislikeBtn.classList.remove('active');
+                    }
+                }
+                if (newAction === 'dislike') {
+                    dislikeCountEl.textContent = parseInt(dislikeCountEl.textContent) + 1;
+                    dislikeBtn.classList.add('active');
+                    if (currentInteraction === 'like') {
+                        likeCountEl.textContent = parseInt(likeCountEl.textContent) - 1;
+                        likeBtn.classList.remove('active');
+                    }
+                }
+
+                console.log(`User ${currentUser.uid} ${newAction ? 'set action to ' + newAction : 'removed action'} for game ${gameId}`);
+
+            } catch (error) {
+                console.error("Error updating like/dislike:", error);
+                alert("An error occurred. Please try again.");
+                // Reload ratings to revert optimistic update if needed
+                loadGameRatings();
+            }
+        }
+
+        // Handles posting a new comment for the game.
+        async function handlePostComment() {
+            if (!currentUser) {
+                alert('Please log in to post a comment.');
+                return;
             }
 
-            console.log(`User ${currentUser.uid} ${newAction ? 'set action to ' + newAction : 'removed action'} for game ${gameId}`);
+            const text = commentInput.value.trim();
+            if (!text) {
+                alert('Please enter a comment.');
+                return;
+            }
 
-        } catch (error) {
-            console.error("Error updating like/dislike:", error);
-            alert("An error occurred. Please try again.");
-            // Reload ratings to revert optimistic update if needed
-            loadGameRatings();
+            try {
+                // TODO: Replace 'games' and 'comments' with your actual collection names if different
+                const commentsRef = collection(db, 'games', gameId, 'comments');
+                // Use addDoc to create a new document in the subcollection
+                await addDoc(commentsRef, {
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || currentUser.email || 'Anonymous User',
+                    text: text,
+                    timestamp: new Date(), // Firestore Timestamp
+                    likes: 0,
+                    dislikes: 0
+                });
+
+                commentInput.value = ''; // Clear input
+                console.log(`Comment posted by ${currentUser.uid} for game ${gameId}`);
+                loadComments(); // Reload comments to show the new one
+            } catch (error) {
+                console.error("Error posting comment:", error);
+                alert("An error occurred posting your comment. Please try again.");
+            }
         }
-    }
 
-    async function handlePostComment() {
-        if (!currentUser) {
-            alert('Please log in to post a comment.');
-            return;
+        // Placeholder for handling likes/dislikes on individual comments.
+        async function handleCommentInteraction(event) {
+            // This is a placeholder for future implementation.
+            // Interacting with individual comment likes/dislikes requires a more complex Firestore structure
+            // (e.g., tracking user votes on specific comments).
+            // For now, we'll just log the attempt.
+            console.log("Comment interaction attempted (not fully implemented yet).");
+            alert("Comment voting is coming soon!");
+            // TODO: Implement user-specific voting on comments in Firestore.
         }
 
-        const text = commentInput.value.trim();
-        if (!text) {
-            alert('Please enter a comment.');
-            return;
-        }
+        // --- Event Listeners ---
+        likeBtn.addEventListener('click', () => handleLikeDislike('like'));
+        dislikeBtn.addEventListener('click', () => handleLikeDislike('dislike'));
+        postCommentBtn.addEventListener('click', handlePostComment);
+        commentsSortEl.addEventListener('change', loadComments); // Reload comments when sort changes
+        wishBtn.addEventListener('click', handleWishlistToggle); // Add event listener for wishlist button
 
-        try {
-            // TODO: Replace 'games' and 'comments' with your actual collection names if different
-            const commentsRef = collection(db, 'games', gameId, 'comments');
-            // Use addDoc to create a new document in the subcollection
-            await addDoc(commentsRef, {
-                userId: currentUser.uid,
-                userName: currentUser.displayName || currentUser.email || 'Anonymous User',
-                text: text,
-                timestamp: new Date(), // Firestore Timestamp
-                likes: 0,
-                dislikes: 0
-            });
+        // TODO: Implement Buy/Download functionality
+        buyBtn.addEventListener('click', () => {
+             if (!currentUser) {
+                alert('Please log in to purchase.');
+                return;
+            }
+            // TODO: Integrate with a real payment system (e.g., Stripe, PayPal)
+            alert(`Redirecting to payment for Portal TLD ($24.99)... (Integration Required)`);
+            // Example: window.open('https://your-payment-gateway.com/checkout?game=portal-tld', '_blank');
+        });
 
-            commentInput.value = ''; // Clear input
-            console.log(`Comment posted by ${currentUser.uid} for game ${gameId}`);
-            loadComments(); // Reload comments to show the new one
-        } catch (error) {
-            console.error("Error posting comment:", error);
-            alert("An error occurred posting your comment. Please try again.");
-        }
-    }
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadGameRatings();
+            await loadComments();
+            // Wishlist status will be checked automatically when auth state changes
+        });
 
-    async function handleCommentInteraction(event) {
-        // This is a placeholder for future implementation.
-        // Interacting with individual comment likes/dislikes requires a more complex Firestore structure
-        // (e.g., tracking user votes on specific comments).
-        // For now, we'll just log the attempt.
-        console.log("Comment interaction attempted (not fully implemented yet).");
-        alert("Comment voting is coming soon!");
-        // TODO: Implement user-specific voting on comments in Firestore.
-    }
-
-    // --- Event Listeners ---
-    likeBtn.addEventListener('click', () => handleLikeDislike('like'));
-    dislikeBtn.addEventListener('click', () => handleLikeDislike('dislike'));
-    postCommentBtn.addEventListener('click', handlePostComment);
-    commentsSortEl.addEventListener('change', loadComments); // Reload comments when sort changes
-    wishBtn.addEventListener('click', handleWishlistToggle); // Add event listener for wishlist button
-
-    // TODO: Implement Buy/Download functionality
-    buyBtn.addEventListener('click', () => {
-         if (!currentUser) {
-            alert('Please log in to purchase.');
-            return;
-        }
-        // TODO: Integrate with a real payment system (e.g., Stripe, PayPal)
-        alert(`Redirecting to payment for Portal TLD ($24.99)... (Integration Required)`);
-        // Example: window.open('https://your-payment-gateway.com/checkout?game=portal-tld', '_blank');
-    });
-
-    // --- Initial Load ---
-    document.addEventListener('DOMContentLoaded', async () => {
-        await loadGameRatings();
-        await loadComments();
-        // Check wishlist status after initial load (will happen automatically when auth state changes)
-    });
-
-</script>
+    </script>
+</body>
+</html>
