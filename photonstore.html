@@ -51,7 +51,8 @@
       <a href="#news">News</a>
       <a href="#shop">Shop</a>
     </div>
-    <button id="login-btn" onclick="login()">Login</button>
+    <!-- Removed onclick handler from HTML -->
+    <button id="login-btn">Login</button>
   </div>
 </div>
 
@@ -69,25 +70,26 @@
 <div class="container">
   <div class="games-grid" id="games-grid">
     <!-- Game Cards -->
-    <!-- Added data-link attribute for hardcoded navigation -->
-    <div class="game-card" data-category="puzzle" data-title="Portal TLD" data-link="portal-tld.html" onclick="openGame(this)">
-      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Portal+TLD" class="game-image" alt="Portal TLD">
+    <!-- Removed onclick handler from HTML -->
+    <div class="game-card" data-category="puzzle" data-title="Portal TLD" data-link="portal-tld.html">
+      <!-- Placeholder image might cause errors, using a different service or a local image is better -->
+      <img src="https://placehold.co/300x170/222222/FFFFFF?text=Portal+TLD" class="game-image" alt="Portal TLD">
       <div class="game-info">
         <h3 class="game-title">Portal TLD</h3>
         <div class="game-price">$24.99</div>
       </div>
     </div>
 
-    <div class="game-card" data-category="adventure" data-title="Cosmic Odyssey" data-link="cosmic-odyssey.html" onclick="openGame(this)">
-      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Cosmic+Odyssey" class="game-image" alt="Cosmic Odyssey">
+    <div class="game-card" data-category="adventure" data-title="Cosmic Odyssey" data-link="cosmic-odyssey.html">
+      <img src="https://placehold.co/300x170/222222/FFFFFF?text=Cosmic+Odyssey" class="game-image" alt="Cosmic Odyssey">
       <div class="game-info">
         <h3 class="game-title">Cosmic Odyssey</h3>
         <div class="game-price">$19.99</div>
       </div>
     </div>
 
-    <div class="game-card" data-category="action" data-title="Quantum Rift" data-link="quantum-rift.html" onclick="openGame(this)">
-      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Quantum+Rift" class="game-image" alt="Quantum Rift">
+    <div class="game-card" data-category="action" data-title="Quantum Rift" data-link="quantum-rift.html">
+      <img src="https://placehold.co/300x170/222222/FFFFFF?text=Quantum+Rift" class="game-image" alt="Quantum Rift">
       <div class="game-info">
         <h3 class="game-title">Quantum Rift</h3>
         <div class="game-price">$29.99</div>
@@ -95,8 +97,8 @@
     </div>
 
     <!-- Add more cards here, remember to add the data-link attribute -->
-    <div class="game-card" data-category="puzzle" data-title="Test Game" data-link="test-game.html" onclick="openGame(this)">
-      <img src="https://via.placeholder.com/300x170/222222/FFFFFF?text=Test+Game" class="game-image" alt="Test Game">
+    <div class="game-card" data-category="puzzle" data-title="Test Game" data-link="test-game.html">
+      <img src="https://placehold.co/300x170/222222/FFFFFF?text=Test+Game" class="game-image" alt="Test Game">
       <div class="game-info">
         <h3 class="game-title">Test Game</h3>
         <div class="game-price">Free</div>
@@ -105,6 +107,7 @@
   </div>
 </div>
 
+<!-- Module script for Firebase -->
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -145,7 +148,7 @@
     }
   });
 
-  // Login function
+  // Define login function inside the module
   function login() {
     console.log("Login button clicked. Current user:", currentUser);
     if (currentUser) {
@@ -155,15 +158,10 @@
       // Sign in with popup
       signInWithPopup(auth, provider)
         .then((result) => {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          // const credential = GoogleAuthProvider.credentialFromResult(result);
-          // const token = credential.accessToken;
           // The signed-in user info.
           currentUser = result.user;
           console.log('User signed in successfully:', currentUser);
           // The button text will be updated by the onAuthStateChanged listener
-          // Optionally, you can provide feedback here too
-          // alert(`Welcome, ${currentUser.displayName || currentUser.email}!`);
         })
         .catch((error) => {
           // Handle Errors here.
@@ -171,7 +169,6 @@
           const errorMessage = error.message;
           console.error('Login error:', errorCode, errorMessage);
           alert('Login failed: ' + errorMessage);
-          // Common errors might be related to blocked popups or unauthorized domains
           if (errorCode === 'auth/popup-blocked') {
             alert('Login popup was blocked. Please allow popups for this site.');
           } else if (errorCode === 'auth/cancelled-popup-request' || errorCode === 'auth/popup-closed-by-user') {
@@ -181,7 +178,7 @@
     }
   }
 
-  // Open game info page using the hardcoded link
+  // Define openGame function inside the module
   function openGame(cardElement) {
     const hardcodedLink = cardElement.dataset.link;
     if (hardcodedLink) {
@@ -221,6 +218,16 @@
     // Add event listeners
     searchBar.addEventListener('input', filterGames);
     categoryFilter.addEventListener('change', filterGames);
+
+    // Add event listeners to the game cards *after* the DOM is loaded
+    gameCards.forEach(card => {
+        card.addEventListener('click', () => openGame(card));
+    });
+
+    // Add event listener to the login button
+    const loginBtn = document.getElementById('login-btn');
+    loginBtn.addEventListener('click', login);
+
   });
 
 </script>
