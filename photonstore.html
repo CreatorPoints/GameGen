@@ -98,70 +98,108 @@
 </div>
 
 <script type="module">
-  // Firebase auth only for login button
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.1/firebase-auth.js";
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  // Import Firebase Authentication
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
+  // Your web app's Firebase configuration
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCsulwdk4ryzoCwpuKji5a8b-jXeG5ews4",
+    authDomain: "photon-userbase.firebaseapp.com",
+    projectId: "photon-userbase",
+    storageBucket: "photon-userbase.firebasestorage.app",
+    messagingSenderId: "66493624110",
+    appId: "1:66493624110:web:d820995afc5b2bcad354bf",
+    measurementId: "G-9RJRPKKNZV"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  // Initialize Firebase Authentication
   const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
+
   let currentUser = null;
 
-  const loginBtn = document.getElementById('login-btn');
-
-  function login(){
-    if(currentUser){
-      alert(`Logged in as ${currentUser.displayName}`);
+  // Set up auth state listener
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    const loginBtn = document.getElementById('login-btn');
+    if (user) {
+      loginBtn.textContent = user.displayName || user.email || 'Logged In';
     } else {
+      loginBtn.textContent = 'Login';
+    }
+  });
+
+  // Login function
+  function login() {
+    if (currentUser) {
+      // User is logged in
+      alert(`Logged in as ${currentUser.displayName || currentUser.email}`);
+    } else {
+      // Sign in with popup
       signInWithPopup(auth, provider)
-        .then((result)=>{
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          // const credential = GoogleAuthProvider.credentialFromResult(result);
+          // const token = credential.accessToken;
+          // The signed-in user info.
           currentUser = result.user;
-          loginBtn.textContent = currentUser.displayName;
-        }).catch(err=>console.error(err));
+          console.log('User signed in:', currentUser);
+          // The button text will be updated by the onAuthStateChanged listener
+        })
+        .catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error('Login error:', errorCode, errorMessage);
+          alert('Login failed: ' + errorMessage);
+        });
     }
   }
 
-  onAuthStateChanged(auth, user=>{
-    currentUser=user;
-    if(user){loginBtn.textContent=user.displayName;}
-    else{loginBtn.textContent="Login";}
+  // Open game info page
+  function openGame(card) {
+    const title = card.dataset.title;
+    // Create a URL-friendly slug
+    const slug = title.toLowerCase().replace(/\s+/g, '-');
+    window.location.href = `${slug}.html`;
+  }
+
+  // Filter & search functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchBar = document.getElementById('search-bar');
+    const categoryFilter = document.getElementById('category-filter');
+    const gameCards = document.querySelectorAll('.game-card');
+
+    function filterGames() {
+      const searchText = searchBar.value.toLowerCase();
+      const category = categoryFilter.value;
+
+      gameCards.forEach(card => {
+        const title = card.dataset.title.toLowerCase();
+        const cardCategory = card.dataset.category;
+
+        const matchesSearch = title.includes(searchText);
+        const matchesCategory = category === 'all' || cardCategory === category;
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Add event listeners
+    searchBar.addEventListener('input', filterGames);
+    categoryFilter.addEventListener('change', filterGames);
   });
 
-  // Open game info page
-  function openGame(card){
-    const title = card.dataset.title;
-    if(title==="Portal TLD") window.location.href="portaltld.html";
-    else alert(`Open page for ${title}`);
-  }
-
-  // Filter & search
-  const searchBar = document.getElementById('search-bar');
-  const categoryFilter = document.getElementById('category-filter');
-  const gameCards = document.querySelectorAll('.game-card');
-
-  function filterGames(){
-    const searchText = searchBar.value.toLowerCase();
-    const category = categoryFilter.value;
-    gameCards.forEach(card=>{
-      const title = card.dataset.title.toLowerCase();
-      const cardCategory = card.dataset.category;
-      if(title.includes(searchText) && (category==='all'||category===cardCategory)){
-        card.style.display='';
-      } else {card.style.display='none';}
-    });
-  }
-
-  searchBar.addEventListener('input', filterGames);
-  categoryFilter.addEventListener('change', filterGames);
 </script>
 
 </body>
