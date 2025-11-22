@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet the Team - Photon Studios</title>
+    <title>Photon Studios - About Us</title>
     <style>
         /* --- Reusable Cosmic Theme Styles --- */
         * {
@@ -17,7 +17,6 @@
             background: #1b2838;
             overflow-x: hidden;
             position: relative;
-            min-height: 100vh; /* Ensure full viewport height */
         }
         #bg-video {
             position: fixed;
@@ -64,135 +63,76 @@
             font-weight: bold;
         }
         #login-btn:hover { background: rgba(255, 255, 255, 0.25); }
-        .container { padding: 100px 40px 40px; display: flex; flex-direction: column; align-items: center; min-height: calc(100vh - 140px); /* Adjust for navbar/footer if any */ }
+        .container { padding: 140px 40px 40px; /* Adjust for fixed navbar */ }
         /* --- End Reusable Styles --- */
 
-        /* --- Main Content Layout --- */
-        .page-header {
+        /* --- Banner Section --- */
+        .banner-section {
+            width: 100%;
+            max-width: 1200px; /* Limit width on large screens */
+            margin: 0 auto 40px; /* Add space below */
+            position: relative; /* For z-index */
+            z-index: 10; /* Ensure it's above the background video but below navbar */
+        }
+        .team-banner {
+            width: 100%;
+            height: 400px; /* Set desired height */
+            object-fit: cover; /* Fill the space */
+            border-radius: 8px; /* Optional: add rounded corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.5s ease; /* Smooth opacity transition */
+        }
+        .banner-section h1 {
             text-align: center;
-            margin-bottom: 50px;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: fadeInDown 1s ease forwards 0.5s; /* Animate after a delay */
-        }
-        .page-title { font-size: 3rem; margin-bottom: 10px; }
-        .page-subtitle { font-size: 1.2rem; color: #aaa; }
-
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        /* --- Animated Team Photo Section --- */
-        .team-photo-container {
-            position: relative;
-            width: 300px; /* Adjust size as needed */
-            height: 300px; /* Adjust size as needed */
-            margin: 20px auto 40px; /* Center and add space */
-            border-radius: 50%; /* Make it circular */
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(90, 169, 230, 0.5), /* Primary glow */
-                        inset 0 0 20px rgba(0, 0, 0, 0.8); /* Inner shadow for depth */
-            border: 3px solid rgba(90, 169, 230, 0.5);
-            opacity: 0;
-            transform: scale(0.8);
-            animation: scaleInRotate 1.5s ease-out forwards 1s; /* Animate after delay */
-        }
-
-        .team-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Fill the circle */
-            display: block;
-        }
-
-        /* --- Dynamic Info Sections --- */
-        .info-sections {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            width: 100%;
-        }
-
-        .info-card {
-            background: rgba(30, 40, 50, 0.7);
-            border-radius: 10px;
-            padding: 25px;
-            width: 100%;
-            max-width: 500px; /* Max width for readability */
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .info-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-            animation: slideInUp 0.8s ease forwards; /* Add specific slide-in animation */
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px); /* Lift slightly on hover */
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(90, 169, 230, 0.3);
-        }
-
-        .info-card h2 {
+            margin-top: 20px;
+            font-size: 2.5rem;
             color: #5aa9e6;
+        }
+
+        /* --- Dynamic Content Sections --- */
+        .dynamic-content {
+            max-width: 800px; /* Limit width for readability */
+            margin: 0 auto;
+        }
+        .content-paragraph {
+            background: rgba(30, 40, 50, 0.6); /* Slightly see-through background */
+            padding: 25px;
+            margin-bottom: 25px; /* Space between paragraphs */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px); /* Slight blur effect */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0; /* Initially hidden for animation */
+            transform: translateY(20px); /* Start slightly below */
+            transition: opacity 0.8s ease, transform 0.8s ease; /* Smooth transition */
+        }
+        .content-paragraph.visible {
+            opacity: 1;
+            transform: translateY(0); /* Move to original position */
+        }
+        .content-paragraph h2 {
+            color: #5aa9e6; /* Header color */
             margin-bottom: 15px;
             font-size: 1.8rem;
-            text-align: center;
         }
-
-        .info-card ul {
+        .content-paragraph p {
+            line-height: 1.6; /* Improve readability */
+            margin-bottom: 10px;
+        }
+        .content-paragraph ul {
             padding-left: 20px;
             margin-bottom: 15px;
         }
-
-        .info-card li {
+        .content-paragraph li {
             margin-bottom: 8px;
             line-height: 1.5;
         }
 
-        .info-card p {
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-
-        /* --- Animations --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes scaleInRotate {
-            0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
-            70% { transform: scale(1.05) rotate(2deg); } /* Overshoot slightly */
-            100% { opacity: 1; transform: scale(1) rotate(0); }
-        }
-
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Parallax Effect on Scroll (Optional Enhancement) --- */
-        .parallax-element {
-            transform: translateZ(0); /* Trigger hardware acceleration */
-        }
-
         /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
-            .page-title { font-size: 2.2rem; }
-            .page-subtitle { font-size: 1rem; }
-            .team-photo-container { width: 250px; height: 250px; }
-            .info-card { max-width: 100%; } /* Full width on small screens */
+            .banner-section h1 { font-size: 2rem; }
+            .team-banner { height: 250px; } /* Smaller height on mobile */
+            .content-paragraph { padding: 20px; margin-bottom: 20px; } /* Adjust padding/margin */
         }
     </style>
 </head>
@@ -216,104 +156,101 @@
     </div>
 
     <div class="container">
-        <div class="page-header parallax-element">
-            <h1 class="page-title">Meet the Team</h1>
-            <p class="page-subtitle">The minds behind Photon Studios</p>
+        <div class="banner-section">
+            <!-- Replace 'team_banner.jpg' with the path to your actual banner photo -->
+            <img src="https://placehold.co/1200x400/222222/FFFFFF?text=Photon+Studios+Team+Banner" alt="Photon Studios Team Banner" class="team-banner" id="team-banner">
+            <h1>Meet Photon Studios</h1>
         </div>
 
-        <div class="content-wrapper">
-            <div class="team-photo-container parallax-element">
-                <!-- Replace 'team_photo.jpg' with the path to your actual team photo -->
-                <img src="https://placehold.co/300x300/222222/FFFFFF?text=Team+Photo" alt="Photon Studios Team" class="team-photo" id="team-photo">
+        <div class="dynamic-content">
+            <div class="content-paragraph" id="paragraph-1">
+                <h2>Who We Are</h2>
+                <p>Photon Studios is an independent game development team driven by a shared passion for creating immersive and innovative interactive experiences. Founded by a group of enthusiasts who love science fiction, complex puzzles, and compelling narratives, we aim to craft unique games that resonate with players long after the credits roll.</p>
+                <p>We operate with a core belief in quality over quantity, focusing on deeply polished projects that push the boundaries of what games can achieve.</p>
             </div>
 
-            <div class="info-sections">
-                <div class="info-card parallax-element" id="studio-overview">
-                    <h2>Studio Overview</h2>
-                    <p>Photon Studios is an independent game development team founded on the principles of innovation, quality, and passion for storytelling. We are a small but dedicated group, united by our love for creating unique and engaging interactive experiences.</p>
-                    <p>Our mission is to craft games that not only entertain but also challenge players and leave a lasting impression. We believe in the power of games as an art form and strive to contribute meaningfully to the medium.</p>
-                </div>
+            <div class="content-paragraph" id="paragraph-2">
+                <h2>Our Current Focus</h2>
+                <p>Our primary project is <strong>Portal: The Last Dance</strong>, a fan-made continuation exploring the beloved Portal universe.</p>
+                <ul>
+                    <li><strong>Goal:</strong> To deliver a high-quality, story-driven puzzle experience honoring the original while introducing new challenges.</li>
+                    <li><strong>Features:</strong> New characters, innovative mechanics, and a compelling narrative.</li>
+                    <li><strong>Status:</strong> Actively in development.</li>
+                </ul>
+                <p>We are also constantly exploring concepts for future projects, seeking opportunities to experiment with new genres and technologies.</p>
+            </div>
 
-                <div class="info-card parallax-element" id="current-projects">
-                    <h2>Current Focus</h2>
-                    <p>Our main project is <strong>Portal: The Last Dance</strong>, a fan-made continuation of the acclaimed Portal series.</p>
-                    <ul>
-                        <li><strong>Goal:</strong> Deliver a high-quality, story-driven puzzle experience.</li>
-                        <li><strong>Features:</strong> New characters, innovative mechanics, and a compelling narrative set within the Portal universe.</li>
-                        <li><strong>Status:</strong> Actively in development.</li>
-                    </ul>
-                    <p>We are also constantly brainstorming and prototyping ideas for future projects, exploring new genres and technologies.</p>
-                </div>
+            <div class="content-paragraph" id="paragraph-3">
+                <h2>Our Values</h2>
+                <ul>
+                    <li><strong>Creativity & Innovation:</strong> Pushing boundaries and exploring unique ideas.</li>
+                    <li><strong>Quality & Detail:</strong> Meticulous attention to detail and overall polish.</li>
+                    <li><strong>Player Experience:</strong> Designing engaging and memorable experiences.</li>
+                    <li><strong>Passion:</strong> A genuine enthusiasm for game development and the medium itself.</li>
+                    <li><strong>Integrity:</strong> Honesty and transparency in our work.</li>
+                </ul>
+            </div>
 
-                <div class="info-card parallax-element" id="values">
-                    <h2>Core Values</h2>
-                    <ul>
-                        <li><strong>Creativity:</strong> Pushing boundaries and exploring unique ideas.</li>
-                        <li><strong>Quality:</strong> Meticulous attention to detail and polish.</li>
-                        <li><strong>Player-Centricity:</strong> Designing experiences with the player in mind.</li>
-                        <li><strong>Passion:</strong> Genuine enthusiasm for game development.</li>
-                        <li><strong>Integrity:</strong> Honesty and transparency in our work.</li>
-                    </ul>
-                </div>
+            <div class="content-paragraph" id="paragraph-4">
+                <h2>Our Approach</h2>
+                <p>We believe in the power of games as an art form. Our development process emphasizes iterative design, player feedback, and technical excellence. We strive to create games that are not only fun but also thought-provoking and emotionally resonant.</p>
+                <p>Collaboration and open communication are key within our team, ensuring that every member's voice is heard and contributes to the final product.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Intersection Observer for Scroll Animations ---
+        // --- Get the banner element ---
+        const bannerElement = document.getElementById('team-banner');
+
+        // --- Function to handle scroll event for banner fade ---
+        function handleScroll() {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            // Calculate opacity based on scroll position
+            // Fade out completely after scrolling past the initial view
+            let opacity = 1 - (scrollPosition / (windowHeight * 0.5)); // Adjust divisor to control fade speed
+            opacity = Math.max(0, Math.min(1, opacity)); // Clamp between 0 and 1
+
+            // Apply the calculated opacity to the banner
+            if (bannerElement) {
+                bannerElement.style.opacity = opacity;
+            }
+        }
+
+        // --- Intersection Observer for Dynamic Paragraph Animations ---
         const observerOptions = {
             threshold: 0.1, // Trigger when 10% of the element is visible
-            rootMargin: '0px 0px -50px 0px' // Adjust trigger point slightly
+            rootMargin: '0px 0px -100px 0px' // Adjust trigger point slightly (e.g., trigger earlier)
         };
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
+                    // Add the 'visible' class to trigger the animation
                     entry.target.classList.add('visible');
-                    // Optional: Stop observing once it's visible to prevent re-triggering
+                    // Optional: Stop observing the element after it becomes visible to prevent re-triggering
                     // observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
 
-        // --- Initialize Animations ---
+        // --- Initialize ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Observe the team photo container
-            const teamPhotoContainer = document.querySelector('.team-photo-container');
-            if (teamPhotoContainer) {
-                // The team photo animation is triggered by CSS animation-delay, no JS needed here
-            }
+            // Attach the scroll event listener for the banner fade
+            window.addEventListener('scroll', handleScroll);
 
-            // Observe the info cards
-            const infoCards = document.querySelectorAll('.info-card');
-            infoCards.forEach((card, index) => {
-                // Add a staggered delay for each card's animation trigger
-                setTimeout(() => {
-                    if (card) {
-                        observer.observe(card);
-                    }
-                }, 1500 + (index * 200)); // Start observing cards after the photo animation, stagger by 200ms
+            // Observe all content paragraphs for the dynamic appearance animation
+            const paragraphs = document.querySelectorAll('.content-paragraph');
+            paragraphs.forEach(paragraph => {
+                if (paragraph) {
+                    observer.observe(paragraph);
+                }
             });
 
-            // Observe the header
-            const header = document.querySelector('.page-header');
-            if (header) {
-                 // The header animation is triggered by CSS animation-delay, no JS needed here
-            }
-        });
-
-        // --- Optional: Enhance with Parallax or other effects on scroll ---
-        // Example: Simple scroll-based effect for elements with 'parallax-element' class
-        // Note: True parallax often requires more complex calculations
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5; // Adjust multiplier for effect intensity
-
-            // Apply subtle effect to header
-            const header = document.querySelector('.page-header');
-            if (header) {
-                header.style.transform = `translateY(${rate}px)`;
-            }
+            // Trigger scroll handler once on load in case the page starts scrolled
+            handleScroll();
         });
 
     </script>
