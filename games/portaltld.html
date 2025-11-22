@@ -135,7 +135,7 @@
     </div>
   </div>
 
-  <script type="module">
+ <script type="module">
     // ---------------------------
     // Firebase SDK imports
     // ---------------------------
@@ -370,6 +370,7 @@
           commentListEl.appendChild(commentEl);
         });
 
+        // Add event listeners for comment voting buttons
         document.querySelectorAll('.comment-like-btn, .comment-dislike-btn').forEach(btn => {
           btn.addEventListener('click', handleCommentInteraction);
         });
@@ -400,7 +401,7 @@
         });
         commentInput.value = '';
         console.log('Comment posted by', currentUser.uid);
-        await loadComments();
+        await loadComments(); // Reload to show the new comment
       } catch (err) {
         console.error('Error posting comment:', err);
         alert('An error occurred posting your comment. Please try again.');
@@ -408,15 +409,74 @@
     }
 
     // ---------------------------
-    // Comment likes/dislikes placeholder (can be expanded later)
+    // Comment likes/dislikes (NEW)
     // ---------------------------
     async function handleCommentInteraction(e) {
       const btn = e.currentTarget;
       const commentId = btn.dataset.commentId;
-      if (!currentUser) { alert('Please log in to vote on comments.'); return; }
-      // For now we show a coming soon message; you can implement per-user votes by creating a subcollection or per-user doc.
-      alert('Comment voting is coming soon!');
+      const voteType = btn.classList.contains('comment-like-btn') ? 'up' : 'down';
+
+      if (!currentUser) {
+        alert('Please log in to vote on comments.');
+        return;
+      }
+
+      try {
+        // Ensure the main game and comment docs exist first
+        const gameRef = doc(db, 'games', gameId);
+        await ensureDoc(gameRef, { likes: 0, dislikes: 0 });
+
+        const commentRef = doc(db, 'games', gameId, 'comments', commentId);
+        // Ensure the comment doc exists (it should if it's displayed, but be safe)
+        await ensureDoc(commentRef, { likes: 0, dislikes: 0, userId: 'temp', userName: 'temp', text: 'temp', timestamp: serverTimestamp() });
+
+        // Reference to the user's specific vote for this comment
+        const userVoteRef = doc(db, 'games', gameId, 'comments', commentId, 'userVotes', currentUser.uid);
+
+        // Get current user vote state
+        const userVoteSnap = await getDoc(userVoteRef);
+        const currentVote = userVoteSnap.exists() ? userVoteSnap.data().vote : null;
+
+        // Determine the new vote
+        const newVote = (currentVote === voteType) ? null : voteType; // Toggle off if same button clicked again
+
+        // Calculate the change in counts
+        let likesChange = 0;
+        let dislikesChange = 0;
+
+        if (currentVote === 'up') likesChange -= 1;
+        if (currentVote === 'down') dislikesChange -= 1;
+        if (newVote === 'up') likesChange += 1;
+        if (newVote === 'down') dislikesChange += 1;
+
+        // Update the comment's total vote counts
+        const commentUpdates = {};
+        if (likesChange !== 0) commentUpdates.likes = increment(likesChange);
+        if (dislikesChange !== 0) commentUpdates.dislikes = increment(dislikesChange);
+        await updateDoc(commentRef, commentUpdates);
+
+        // Update or delete the user's vote record
+        if (newVote) {
+          await setDoc(userVoteRef, { vote: newVote }, { merge: true });
+        } else {
+          // Remove the vote document if toggling off
+          await deleteDoc(userVoteRef).catch(err => {
+            if (err.code !== 'not-found') throw err; // Ignore if it didn't exist
+          });
+        }
+
+        console.log(`User ${currentUser.uid} voted ${newVote} on comment ${commentId}. Counts updated.`);
+        // Reload comments to reflect the updated vote counts visually
+        await loadComments();
+
+      } catch (err) {
+        console.error('Error handling comment vote:', err);
+        alert('An error occurred while voting on the comment. Please try again.');
+        // Optionally reload comments to revert optimistic UI changes if implemented
+        // await loadComments();
+      }
     }
+
 
     // ---------------------------
     // Like/Dislike for the game (robust + create missing docs & userInteraction)
@@ -436,21 +496,7 @@
         const currentInteraction = userSnap.exists() ? userSnap.data().action : null;
         const newAction = (currentInteraction === buttonType) ? null : buttonType;
 
-        // Build updates safely
-        const gameUpdates = {};
-        if (currentInteraction === 'like') gameUpdates.likes = increment(-1);
-        if (currentInteraction === 'dislike') gameUpdates.dislikes = increment(-1);
-        if (newAction === 'like') gameUpdates.likes = (gameUpdates.likes ? gameUpdates.likes : increment(0)) && increment(1);
-        if (newAction === 'dislike') gameUpdates.dislikes = (gameUpdates.dislikes ? gameUpdates.dislikes : increment(0)) && increment(1);
-
-        // Because mixing arithmetic expressions into objects can be tricky, do stepwise:
-        const finalGameUpdates = {};
-        if (currentInteraction === 'like') finalGameUpdates.likes = increment(-1);
-        if (currentInteraction === 'dislike') finalGameUpdates.dislikes = increment(-1);
-        if (newAction === 'like') finalGameUpdates.likes = (finalGameUpdates.likes ? finalGameUpdates.likes : increment(0)) , finalGameUpdates.likes = increment((finalGameUpdates.likes && 0) + 1);
-        // Above line is defensive but Firestore increment takes number. Simpler approach below:
-
-        // Simpler: compute numbers by reading current doc
+        // Compute new counts based on current state
         const gameSnap = await getDoc(gameRef);
         const gameData = gameSnap.exists() ? gameSnap.data() : { likes: 0, dislikes: 0 };
         let likes = gameData.likes || 0;
@@ -579,9 +625,13 @@
       likeBtn.addEventListener('click', () => handleLikeDislike('like'));
       dislikeBtn.addEventListener('click', () => handleLikeDislike('dislike'));
       wishBtn.addEventListener('click', handleWishlistToggle);
+      // Add alert for buy button
       buyBtn.addEventListener('click', () => {
-        if (!currentUser) { alert('Please log in to purchase.'); return; }
-        alert('Redirecting to payment for Portal TLD (integration required)');
+        if (!currentUser) {
+            alert('Please log in to purchase.');
+            return;
+        }
+        alert('This game is not yet listed for purchase.');
       });
 
       // Initial loads
@@ -596,6 +646,6 @@
     window.__photon_debug = {
       ensureDoc, loadGameRatings, loadComments, renderLocalizedPrice
     };
-  </script>
+</script>
 </body>
 </html>
