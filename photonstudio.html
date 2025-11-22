@@ -150,7 +150,6 @@
                 <a href="index.html">Home</a>
                 <a href="photonstore.html">Shop</a>
                 <a href="photonstudios.html">News</a>
-				<a href="donate.html">Donate</a>
             </div>
             <button id="login-btn">Login</button>
         </div>
@@ -200,7 +199,80 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // --- Firebase SDK imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+        // --- Your Firebase Config ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsulwdk4ryzoCwpuKji5a8b-jXeG5ews4",
+            authDomain: "photon-userbase.firebaseapp.com",
+            projectId: "photon-userbase",
+            storageBucket: "photon-userbase.firebasestorage.app",
+            messagingSenderId: "66493624110",
+            appId: "1:66493624110:web:d820995afc5b2bcad354bf",
+            measurementId: "G-9RJRPKKNZV"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+
+        // --- Firebase Auth State Listener ---
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const loginBtn = document.getElementById('login-btn');
+            if (user) {
+                console.log("User is signed in:", user.uid);
+                loginBtn.textContent = user.displayName || user.email || 'Logged In';
+            } else {
+                console.log("No user is signed in.");
+                loginBtn.textContent = 'Login';
+            }
+        });
+
+        // --- Login/Logout Function ---
+        function handleLogin() {
+            console.log("Login button clicked. Current user:", currentUser);
+            if (currentUser) {
+                // User is logged in, sign them out
+                signOut(auth)
+                    .then(() => {
+                        console.log("User signed out successfully.");
+                        // Button text will update via onAuthStateChanged
+                    })
+                    .catch((error) => {
+                        console.error("Sign out error:", error);
+                        alert("An error occurred during sign out.");
+                    });
+            } else {
+                // No user is logged in, sign them in
+                signInWithPopup(auth, provider)
+                    .then((result) => {
+                        // The signed-in user info.
+                        currentUser = result.user;
+                        console.log('User signed in successfully:', currentUser.uid);
+                        // Button text will update via onAuthStateChanged
+                    })
+                    .catch((error) => {
+                        // Handle Errors here.
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.error('Login error:', errorCode, errorMessage);
+                        alert('Login failed: ' + errorMessage);
+                        if (errorCode === 'auth/popup-blocked') {
+                            alert('Login popup was blocked. Please allow popups for this site.');
+                        } else if (errorCode === 'auth/cancelled-popup-request' || errorCode === 'auth/popup-closed-by-user') {
+                            console.log('Login popup was closed by the user.');
+                        }
+                    });
+            }
+        }
+
         // --- Get the banner element ---
         const bannerElement = document.getElementById('team-banner');
 
@@ -252,6 +324,11 @@
 
             // Trigger scroll handler once on load in case the page starts scrolled
             handleScroll();
+
+            // Add event listener to the login button
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.addEventListener('click', handleLogin);
+
         });
 
     </script>
