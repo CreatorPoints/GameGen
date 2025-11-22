@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Photon Studios</title>
+    <style>
+        /* --- Reusable Cosmic Theme Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background: #1b2838;
+            overflow-x: hidden;
+            position: relative; /* For overlay positioning */
+        }
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .dark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #fff; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: #ccc; text-decoration: none; transition: 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        #login-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid white;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            font-weight: bold;
+        }
+        #login-btn:hover { background: rgba(255, 255, 255, 0.25); }
+        .container { padding: 100px 40px 40px; }
+        /* --- End Reusable Styles --- */
+
+        /* --- About Page Specific Styles --- */
+        .about-header {
+            text-align: center;
+            margin-bottom: 50px;
+            opacity: 0; /* Initially hidden for animation */
+            transform: translateY(20px); /* Initially shifted down */
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .about-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .about-title { font-size: 3rem; margin-bottom: 20px; }
+        .about-subtitle { font-size: 1.5rem; color: #aaa; }
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+            gap: 40px;
+            align-items: start;
+        }
+        .about-section {
+            background: rgba(30, 40, 50, 0.6);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Initially hidden for animation */
+            transform: translateY(30px); /* Initially shifted down */
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .about-section h2 { color: #5aa9e6; margin-bottom: 15px; font-size: 1.8rem; }
+        .about-section p { line-height: 1.6; margin-bottom: 15px; }
+        .about-section ul { padding-left: 20px; margin-bottom: 15px; }
+        .about-section li { margin-bottom: 8px; }
+
+        /* Animation for typing effect */
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: #fff;
+            vertical-align: middle;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr; /* Single column on smaller screens */
+            }
+            .about-title { font-size: 2.5rem; }
+            .about-subtitle { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <video id="bg-video" autoplay muted loop>
+        <source src="videos/blackhole.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="dark-overlay"></div>
+
+    <div class="navbar">
+        <div class="logo">PHOTON STUDIOS</div>
+        <div style="display:flex;align-items:center;gap:30px;">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="photonstore.html">Shop</a>
+                <a href="photonstudios.html">News</a>
+            </div>
+            <button id="login-btn">Login</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="about-header" id="header">
+            <h1 class="about-title">About Photon Studios</h1>
+            <p class="about-subtitle">Crafting immersive experiences in the <span id="typing-text"></span><span class="typing-cursor"></span></p>
+        </div>
+
+        <div class="about-content">
+            <div class="about-section" id="studio-desc">
+                <h2>Who We Are</h2>
+                <p>Photon Studios is a passionate independent game development team dedicated to pushing the boundaries of interactive storytelling and innovative gameplay. Founded by a group of enthusiasts who share a love for science fiction, puzzles, and engaging narratives, we strive to create unique and memorable gaming experiences.</p>
+                <p>Our studio operates with a core belief in quality over quantity, focusing on deeply polished projects that resonate with players long after they've finished playing.</p>
+            </div>
+
+            <div class="about-section" id="current-projects">
+                <h2>What We're Working On</h2>
+                <p>Currently, our primary focus is on the development of <strong>Portal: The Last Dance</strong>.</p>
+                <ul>
+                    <li><strong>Genre:</strong> Puzzle</li>
+                    <li><strong>Setting:</strong> A continuation of the beloved Portal universe.</li>
+                    <li><strong>Goal:</strong> To deliver a fan-made experience that honors the original while introducing new challenges, characters, and story elements.</li>
+                </ul>
+                <p>We are also exploring concepts for future projects, always looking for opportunities to experiment with new mechanics and genres.</p>
+            </div>
+
+            <div class="about-section" id="tech-focus">
+                <h2>Our Focus</h2>
+                <ul>
+                    <li>Innovative Puzzle Design</li>
+                    <li>Immersive Storytelling</li>
+                    <li>Clean, Performant Code</li>
+                    <li>Engaging Player Experiences</li>
+                    <li>Community Feedback Integration</li>
+                </ul>
+            </div>
+
+            <div class="about-section" id="values">
+                <h2>Our Values</h2>
+                <ul>
+                    <li>Creativity and Innovation</li>
+                    <li>Player-First Design</li>
+                    <li>Attention to Detail</li>
+                    <li>Collaboration and Transparency</li>
+                    <li>Passion for the Medium</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Typing Effect for Header Subtitle ---
+        const typingTextElement = document.getElementById('typing-text');
+        const phrases = ["Cosmos", "Digital Realms", "Puzzle Chambers", "New Frontiers"];
+        let currentPhraseIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+        let typingSpeed = 150; // ms per character when typing
+        let deletingSpeed = 100; // ms per character when deleting
+        let pauseAfterTyping = 2000; // ms to pause after typing a phrase
+        let pauseAfterDeleting = 500; // ms to pause after deleting
+
+        function typeEffect() {
+            const currentPhrase = phrases[currentPhraseIndex];
+
+            if (!isDeleting && currentCharIndex < currentPhrase.length) {
+                // Typing
+                typingTextElement.textContent += currentPhrase.charAt(currentCharIndex);
+                currentCharIndex++;
+                setTimeout(typeEffect, typingSpeed);
+            } else if (isDeleting && currentCharIndex > 0) {
+                // Deleting
+                typingTextElement.textContent = currentPhrase.substring(0, currentCharIndex - 1);
+                currentCharIndex--;
+                setTimeout(typeEffect, deletingSpeed);
+            } else if (!isDeleting && currentCharIndex === currentPhrase.length) {
+                // Finished typing, pause
+                isDeleting = true;
+                setTimeout(typeEffect, pauseAfterTyping);
+            } else if (isDeleting && currentCharIndex === 0) {
+                // Finished deleting, move to next phrase
+                isDeleting = false;
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                setTimeout(typeEffect, pauseAfterDeleting);
+            }
+        }
+
+        // --- Scroll-Based Animations ---
+        const observerOptions = {
+            threshold: 0.1, // Trigger when 10% of the element is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: Stop observing once it's visible
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // --- Initialize ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start the typing effect
+            typeEffect();
+
+            // Observe elements for scroll animations
+            const elementsToAnimate = [
+                document.getElementById('header'),
+                document.getElementById('studio-desc'),
+                document.getElementById('current-projects'),
+                document.getElementById('tech-focus'),
+                document.getElementById('values')
+            ];
+
+            elementsToAnimate.forEach(el => {
+                if (el) {
+                    observer.observe(el);
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
