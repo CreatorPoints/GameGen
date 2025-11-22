@@ -1,181 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Donate to Photon Studios</title>
-<link rel="icon" href="images/Studioslogo.png" type="image/png" />
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(-45deg, #87CEEB, #4682B4, #1E3A5F, #0B1D33);
-        background-size: 800% 800%;
-        animation: gradientShift 10s ease infinite;
-        color: white;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate to Photon Studios</title>
+    <link rel="icon" href="images/Studioslogo.png" type="image/png" />
+    <style>
+        /* --- Reusable Cosmic Theme Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif; /* Changed font to match other pages */
+            color: white;
+            background: #1b2838; /* Fallback if video doesn't load */
+            overflow-x: hidden;
+            position: relative;
+        }
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -2;
+        }
+        .dark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85); /* Increased opacity for better text contrast */
+            z-index: -1;
+        }
+        .navbar { /* Keep the navbar structure even if empty for consistency */
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #fff; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: #ccc; text-decoration: none; transition: 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        #login-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid white;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            font-weight: bold;
+        }
+        #login-btn:hover { background: rgba(255, 255, 255, 0.25); }
+        .container {
+            padding: 100px 40px 40px; /* Adjusted for fixed navbar */
+            max-width: 800px; /* Limit width for better readability */
+            margin: 0 auto; /* Center content */
+        }
+        /* --- End Reusable Styles --- */
 
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+        /* --- Donation Page Specific Styles --- */
+        .donation-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .donation-title {
+            font-size: 2.5rem;
+            color: #5aa9e6; /* Match theme color */
+        }
 
-    .donation-container {
-        background: #111;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 0 20px #00f2ff33;
-        max-width: 500px;
-        width: 100%;
-        margin-bottom: 30px;
-    }
+        .donation-container {
+            background: rgba(30, 40, 50, 0.8); /* Match theme background */
+            padding: 30px;
+            border-radius: 8px; /* Match theme radius */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Match theme shadow */
+            backdrop-filter: blur(4px); /* Match theme blur */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Match theme border */
+            margin-bottom: 30px;
+        }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #00f2ff;
-    }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
 
-    form {
-        display: flex;
-        flex-direction: column;
-    }
+        label {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #5aa9e6; /* Match theme header color */
+        }
 
-    label {
-        margin-top: 15px;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            padding: 10px;
+            border-radius: 4px; /* Match theme radius */
+            border: 1px solid #555; /* Match theme border */
+            outline: none;
+            width: 100%;
+            background: rgba(30, 40, 50, 0.8); /* Match theme background */
+            color: white;
+            margin-top: 5px;
+        }
 
-    input[type="text"],
-    input[type="email"],
-    textarea {
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        width: 100%;
-        background: #1a1a1a;
-        color: white;
-        margin-top: 5px;
-    }
+        input[type="submit"] {
+            margin-top: 25px;
+            padding: 12px 25px; /* Match theme button padding */
+            background: #5aa9e6; /* Match theme button color */
+            color: white; /* Match theme button text */
+            border: none;
+            border-radius: 4px; /* Match theme radius */
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s; /* Match theme transition */
+        }
 
-    input[type="submit"] {
-        margin-top: 25px;
-        padding: 12px;
-        background: #00f2ff;
-        color: #111;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background 0.3s;
-    }
+        input[type="submit"]:hover {
+            background: #4a99d6; /* Match theme button hover */
+        }
 
-    input[type="submit"]:hover {
-        background: #00cce6;
-    }
+        .donate-info {
+            background: rgba(30, 40, 50, 0.6); /* Match theme background */
+            padding: 25px;
+            border-radius: 8px; /* Match theme radius */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Match theme shadow */
+            backdrop-filter: blur(4px); /* Match theme blur */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Match theme border */
+        }
 
-    small {
-        color: #aaa;
-    }
+        .donate-info h2 {
+            color: #5aa9e6; /* Match theme header color */
+            margin-bottom: 15px;
+            font-size: 1.8rem; /* Match theme header size */
+        }
 
-    .donate {
-        max-width: 500px;
-        color: #eee;
-    }
+        .donate-info a {
+            color: #5aa9e6; /* Match theme link color */
+            text-decoration: underline;
+        }
 
-    .donate h2 {
-        color: #00f2ff;
-    }
+        .donate-info a:hover {
+            color: #4a99d6; /* Match theme link hover */
+        }
 
-    .donate a {
-        color: #00f2ff;
-        text-decoration: underline;
-    }
+        .donate-info ol {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
 
-    .donate ol {
-        margin-left: 20px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
+        .donate-info li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
 
-    .donate p {
-        margin-top: 10px;
-        line-height: 1.5;
-    }
-    
-a:hover {
-    background-color: #00cce6;
-}
+        .donate-info p {
+            line-height: 1.6; /* Match theme line height */
+            margin-bottom: 10px;
+        }
 
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.1); /* Match theme button style */
+            color: white;
+            text-decoration: none;
+            border-radius: 4px; /* Match theme radius */
+            border: 1px solid #555; /* Match theme button style */
+            transition: 0.2s; /* Match theme transition */
+        }
 
-</style>
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2); /* Match theme button hover */
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .container { padding: 100px 20px 20px; }
+            .donation-title { font-size: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    <div class="donation-container">
-        <h1>Support Photon Studios</h1>
-        <form action="https://formspree.io/f/mvgvopon" method="POST">
-            <label for="username">Username *</label>
-            <input type="text" id="username" name="username" required placeholder="Your name or handle">
+    <video id="bg-video" autoplay muted loop>
+        <source src="videos/blackhole.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="dark-overlay"></div>
 
-            <label for="email">Email *</label>
-            <input type="email" id="email" name="email" required placeholder="you@example.com">
+    <!-- Optional: Keep an empty navbar for consistent layout, or remove it -->
+    <!-- <div class="navbar">
+        <div class="logo">PHOTON STUDIOS</div>
+        <div style="display:flex;align-items:center;gap:30px;">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="photonstore.html">Shop</a>
+                <a href="photonstudios.html">News</a>
+            </div>
+            <button id="login-btn">Login</button>
+        </div>
+    </div> -->
 
-            <label for="code">Gift Card Code *</label>
-            <input type="text" id="code" name="code" required placeholder="XXXX-XXXX-XXXX">
-            
-            <input type="submit" value="Send Donation">
-        </form>
-    </div>
+    <div class="container">
+        <div class="donation-header">
+            <h1 class="donation-title">Support Photon Studios</h1>
+        </div>
 
-    <div class="donate">    
-        <h2>How Gift Cards Work:</h2>
-        <p>We currently support only <u>Amazon E-Gift Cards</u>. Buy a gift card from <a href="https://www.amazon.in/gift-cards/b?ie=UTF8&node=2278488031" target="_blank">Amazon</a> and paste the code along with the screenshot link (optional). Only a working gift card gets rewarded.</p>
+        <div class="donation-container">
+            <form action="https://formspree.io/f/mvgvopon" method="POST">
+                <label for="username">Username *</label>
+                <input type="text" id="username" name="username" required placeholder="Your name or handle">
 
-        <ol type="1">
-            <li>Go to the Amazon Gift Cards page (official site).</li>
-            <li>Choose <strong>E-Gift Card (Email)</strong> and select a preset value or enter a custom amount.</li>
-            <li>Enter the recipient email (your email) to receive the gift card.</li>
-            <li>Optionally, add a personal message like: “Support Photon Studios – Thank you!”</li>
-            <li>Checkout and complete the payment using your Amazon account.</li>
-            <li>After purchase, copy the digital gift card code (something like ABCD-EFGH-IJKL).</li>
-            <li>Go to the donation form, fill out your username and email, paste the gift card code, and optionally include a screenshot link.</li>
-            <li>Submit the form. You will receive a suitable reward via email once the code is redeemed.</li>
-        </ol>
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
 
-        <p>Make sure you check your email daily (even spam/promotions) to not miss your rewards!</p>
+                <label for="code">Gift Card Code *</label>
+                <input type="text" id="code" name="code" required placeholder="XXXX-XXXX-XXXX">
+
+                <input type="submit" value="Send Donation">
+            </form>
+        </div>
+
+        <div class="donate-info">
+            <h2>How Gift Cards Work:</h2>
+            <p>We currently support only <u>Amazon E-Gift Cards</u>. Buy a gift card from <a href="https://www.amazon.in/gift-cards/b?ie=UTF8&node=2278488031" target="_blank">Amazon</a> and paste the code along with the screenshot link (optional). Only a working gift card gets rewarded.</p>
+
+            <ol type="1">
+                <li>Go to the Amazon Gift Cards page (official site).</li>
+                <li>Choose <strong>E-Gift Card (Email)</strong> and select a preset value or enter a custom amount.</li>
+                <li>Enter the recipient email (your email) to receive the gift card.</li>
+                <li>Optionally, add a personal message like: “Support Photon Studios – Thank you!”</li>
+                <li>Checkout and complete the payment using your Amazon account.</li>
+                <li>After purchase, copy the digital gift card code (something like ABCD-EFGH-IJKL).</li>
+                <li>Go to the donation form, fill out your username and email, paste the gift card code, and optionally include a screenshot link.</li>
+                <li>Submit the form. You will receive a suitable reward via email once the code is redeemed.</li>
+            </ol>
+
+            <p>Make sure you check your email daily (even spam/promotions) to not miss your rewards!</p>
+        </div>
+
+        <a href="index.html" class="back-link">⬅ Back to Main Page</a>
     </div>
 
     <script>
         const form = document.querySelector("form");
 
-        form.addEventListener("submit", function() {
+        form.addEventListener("submit", function(e) {
+            // Prevent default submission if you want to handle it differently
+            // e.preventDefault();
+
+            // Create a thank you message element
             const thankYou = document.createElement("p");
             thankYou.textContent = "🎉 Thank you for supporting Photon Studios! We’ll confirm your reward via email soon.";
-            thankYou.style.color = "#00f2ff";
+            thankYou.style.color = "#5aa9e6"; /* Match theme color */
             thankYou.style.fontWeight = "bold";
+            thankYou.style.textAlign = "center";
+            thankYou.style.marginTop = "15px";
+
+            // Insert the message after the form
             form.parentNode.insertBefore(thankYou, form.nextSibling);
+
+            // Optional: Disable the submit button after submission to prevent double clicks
+            const submitButton = form.querySelector('input[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.value = "Sending..."; // Change button text
         });
     </script>
-<div name="back">
-    <a href="index.html" style="
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 16px;
-    background-color: #00f2ff;
-    color: #111;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background 0.3s;
-">⬅ Back to Main Page</a>
-</div>
 </body>
 </html>
