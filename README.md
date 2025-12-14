@@ -1,3 +1,3 @@
 Rules:
-Don't download files directly from here. Go to https://photonstudios.netlify.app/    |
+Don't download files directly from here.    |
 no messing around here
